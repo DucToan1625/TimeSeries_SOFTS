@@ -618,3 +618,102 @@ class Dataset_Pred(Dataset):
 
     def inverse_transform(self, data):
         return self.scaler.inverse_transform(data)
+class Dataset_PM25(Dataset):
+    """
+    Dataset PM2.5 đã được chia tập và chuẩn hóa trước.
+
+    File NPZ chứa:
+        X_train: [N_train, 96, 7]
+        Y_train: [N_train, 24, 1]
+        X_val:   [N_val, 96, 7]
+        Y_val:   [N_val, 24, 1]
+        X_test:  [N_test, 96, 7]
+        Y_test:  [N_test, 24, 1]
+    """
+
+    def __init__(
+        self,
+        root_path,
+        flag="train",
+        size=None,
+        features="MS",
+        data_path="windows_96_to_24.npz",
+        target="pm25",
+        **kwargs
+    ):
+        super().__init__()
+
+        if flag not in ["train", "val", "test"]:
+            raise ValueError(
+                "Dataset_PM25 chỉ hỗ trợ flag='train', 'val' hoặc 'test'."
+            )
+
+        self.root_path = root_path
+        self.data_path = data_path
+        self.flag = flag
+
+        file_path = os.path.join(self.root_path, self.data_path)
+
+        if not os.path.isfile(file_path):
+            raise FileNotFoundError(
+                f"Không tìm thấy file dữ liệu: {file_path}"
+            )
+
+        # Đọc dữ liệu đã được xử lý từ trước
+        with np.load(file_path, allow_pickle=False) as data:
+            self.data_x = data[f"X_{flag}"].astype(np.float32)
+            self.data_y = data[f"Y_{flag}"].astype(np.float32)
+
+        # Kiểm tra kích thước dữ liệu
+        if self.data_x.ndim != 3:
+            raise ValueError(
+                f"X_{flag} phải có 3 chiều, nhận được {self.data_x.shape}"
+            )
+
+        if self.data_y.ndim != 3:
+            raise ValueError(
+                f"Y_{flag} phải có 3 chiều, nhận được {self.data_y.shape}"
+            )
+
+        if self.data_x.shape[0] != self.data_y.shape[0]:
+            raise ValueError(
+                "Số mẫu X và Y không bằng nhau: "
+                f"{self.data_x.shape[0]} và {self.data_y.shape[0]}"
+            )
+
+        if self.data_x.shape[1:] != (96, 7):
+            raise ValueError(
+                f"X_{flag} cần có dạng [N, 96, 7], "
+                f"nhận được {self.data_x.shape}"
+            )
+
+        if self.data_y.shape[1:] != (24, 1):
+            raise ValueError(
+                f"Y_{flag} cần có dạng [N, 24, 1], "
+                f"nhận được {self.data_y.shape}"
+            )
+
+        if not np.isfinite(self.data_x).all():
+            raise ValueError(f"X_{flag} chứa NaN hoặc Inf.")
+
+        if not np.isfinite(self.data_y).all():
+            raise ValueError(f"Y_{flag} chứa NaN hoặc Inf.")
+
+        print(
+            f"[Dataset_PM25] {flag}: "
+            f"X={self.data_x.shape}, Y={self.data_y.shape}"
+        )
+
+    def __getitem__(self, index):
+        seq_x = self.data_x[index]
+        seq_y = self.data_y[index]
+
+        # SOFTS không sử dụng dấu thời gian để dự báo.
+        # Trả về mảng rỗng để tương thích với data_provider.
+        seq_x_mark = np.zeros((seq_x.shape[0], 0), dtype=np.float32)
+        seq_y_mark = np.zeros((seq_y.shape[0], 0), dtype=np.float32)
+
+        return seq_x, seq_y, seq_x_mark, seq_y_mark
+
+    def __len__(self):
+        return len(self.data_x)

@@ -25,6 +25,7 @@ class AverageMeter:
         self.avg = self.sum / self.count
 
 
+
 def adjust_learning_rate(optimizer, epoch, args):
     if args.lradj == 'type1':
         lr_adjust = {epoch: args.learning_rate * (0.5 ** ((epoch - 1) // 1))}
@@ -51,7 +52,7 @@ class EarlyStopping:
         self.counter = 0
         self.best_score = None
         self.early_stop = False
-        self.val_loss_min = np.Inf
+        self.val_loss_min = np.inf
         self.delta = delta
 
     def __call__(self, val_loss, model, path):
