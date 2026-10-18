@@ -94,5 +94,41 @@ If you find our work useful in your research, please use the following citation:
   author={Han, Lu and Chen, Xu-Yang and Ye, Han-Jia and Zhan, De-Chuan},
   journal={arXiv preprint arXiv:2404.14197},
   year={2024}
+
 }
 ```
+## DINOv3 Integration
+
+This repository includes an experimental integration of DINOv3 ViT-S/16 for feature extraction and forecasting.
+
+Official repository: https://github.com/facebookresearch/dinov3
+
+### Added Files
+
+- `models/DINOv3_PM25.py`: Implements a DINOv3 ViT-S/16 backbone with a forecasting head. The pretrained backbone is frozen, while the forecasting head is trainable.
+- `test_dinov3_pm25.py`: Tests loading the pretrained DINOv3 model and verifies input/output tensor shapes.
+- `train_dinov3_pm25.py`: Trains the forecasting head and saves the best checkpoint based on validation loss.
+- `evaluate_dinov3_pm25.py`: Evaluates saved predictions using MSE, RMSE, and MAE.
+
+### Pretrained Weights
+
+Download the DINOv3 pretrained weights from the official model access page:
+
+https://ai.meta.com/resources/models-and-libraries/dinov3-downloads/
+
+Place the ViT-S/16 checkpoint at:
+
+`checkpoints/dinov3/dinov3_vits16_pretrain_lvd1689m-08c60483.pth`
+
+The DINOv3 repository is expected at `external/dinov3`.
+
+### Run the Experiments
+
+```bash
+python test_dinov3_pm25.py
+python train_dinov3_pm25.py
+python evaluate_dinov3_pm25.py
+```
+
+**Note:** The current implementation converts time-series inputs into image-like representations before passing them to DINOv3. This is an exploratory approach and has not been established as an optimal representation for time-series forecasting.
+
