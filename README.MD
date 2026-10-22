@@ -132,38 +132,19 @@ Y \in \mathbb{R}^{24 \times 1}
 $$
 
 The seven input variables are:
+| Variable | Description |
+|---|---|
+| `pm25` | PM2.5 concentration |
+| `pm10` | PM10 concentration |
+| `temperature` | Air temperature |
+| `humidity` | Relative humidity |
+| `wind_speed` | Wind speed |
+| `pressure` | Atmospheric pressure |
+| `rainfall` | Rainfall |
 
-Variable
+The model predicts only PM2.5 concentrations for the next 24 hourly time steps.
 
-Description
 
-pm25
-
-PM2.5 concentration
-
-pm10
-
-PM10 concentration
-
-temperature
-
-Air temperature
-
-humidity
-
-Relative humidity
-
-wind_speed
-
-Wind speed
-
-pressure
-
-Atmospheric pressure
-
-rainfall
-
-Rainfall
 
 The model predicts only PM2.5 concentrations for the next 24 hourly time steps.
 
@@ -199,7 +180,7 @@ This equation is provided as a standard MSE reference. It must be replaced with 
 
 4. Kaggle Dataset
 
-Public Kaggle dataset: [Insert the actual public Kaggle dataset URL here]
+Public Kaggle dataset: https://www.kaggle.com/datasets/dtoaneasy/hanoi-pm2-5-and-weather-hourly-dataset
 
 The dataset documentation should identify the data source, collection period, variables, measurement units, and preprocessing procedures.
 
