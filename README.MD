@@ -254,6 +254,28 @@ $$
 $$
 
 Lower MAE and RMSE values indicate smaller prediction errors on the evaluated dataset.
+## Project Structure
+
+```text
+SOFTS/
+├── models/
+│   ├── SOFTS.py
+│   └── DINOv3_PM25.py
+├── data/
+│   ├── public/
+│   └── private/
+├── softs_pm25_deploy/
+│   └── app.py
+├── checkpoints/
+│   └── Model checkpoints
+└── README.MD
+```
+
+- `models/`: Model architectures and forecasting components.
+- `data/public/`: Publicly distributable datasets or processed data intended for release.
+- `data/private/`: Locally collected or restricted data that is not intended for public distribution.
+- `softs_pm25_deploy/`: Streamlit forecasting application.
+- `checkpoints/`: Pretrained weights and trained model checkpoints, when available locally.
 
 7. Reproducibility and Limitations
 
