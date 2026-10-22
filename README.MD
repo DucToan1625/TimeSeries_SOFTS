@@ -97,38 +97,204 @@ If you find our work useful in your research, please use the following citation:
 
 }
 ```
-## DINOv3 Integration
+DINOv3 Integration for PM2.5 Forecasting
 
-This repository includes an experimental integration of DINOv3 ViT-S/16 for feature extraction and forecasting.
+This project extends the SOFTS time-series forecasting framework with an experimental DINOv3 backbone integration for hourly PM2.5 forecasting.
 
-Official repository: https://github.com/facebookresearch/dinov3
+The objective is to investigate the combination of DINOv3 feature extraction and SOFTS temporal modeling for air-quality forecasting.
 
-### Added Files
+SOFTS repository: https://github.com/Secilia-Cxy/SOFTS
 
-- `models/DINOv3_PM25.py`: Implements a DINOv3 ViT-S/16 backbone with a forecasting head. The pretrained backbone is frozen, while the forecasting head is trainable.
-- `test_dinov3_pm25.py`: Tests loading the pretrained DINOv3 model and verifies input/output tensor shapes.
-- `train_dinov3_pm25.py`: Trains the forecasting head and saves the best checkpoint based on validation loss.
-- `evaluate_dinov3_pm25.py`: Evaluates saved predictions using MSE, RMSE, and MAE.
+Official DINOv3 repository: https://github.com/facebookresearch/dinov3
 
-### Pretrained Weights
+DINOv3 pretrained weights: https://ai.meta.com/resources/models-and-libraries/dinov3-downloads/
 
-Download the DINOv3 pretrained weights from the official model access page:
+Live Demo
 
-https://ai.meta.com/resources/models-and-libraries/dinov3-downloads/
+Streamlit application: https://timeserieappfts-gpfkmqdj9hil3agwv7dsne.streamlit.app/
 
-Place the ViT-S/16 checkpoint at:
+The deployed application can be accessed through a web browser.
 
-`checkpoints/dinov3/dinov3_vits16_pretrain_lvd1689m-08c60483.pth`
+1. Forecasting Task
 
-The DINOv3 repository is expected at `external/dinov3`.
+The model uses 96 hours of historical air-quality and meteorological observations to predict PM2.5 concentrations for the following 24 hours.
 
-### Run the Experiments
+Input tensor:
 
-```bash
-python test_dinov3_pm25.py
-python train_dinov3_pm25.py
-python evaluate_dinov3_pm25.py
-```
+$$
+X \in \mathbb{R}^{96 \times 7}
+$$
 
-**Note:** The current implementation converts time-series inputs into image-like representations before passing them to DINOv3. This is an exploratory approach and has not been established as an optimal representation for time-series forecasting.
+Prediction target:
 
+$$
+Y \in \mathbb{R}^{24 \times 1}
+$$
+
+The seven input variables are:
+
+Variable
+
+Description
+
+pm25
+
+PM2.5 concentration
+
+pm10
+
+PM10 concentration
+
+temperature
+
+Air temperature
+
+humidity
+
+Relative humidity
+
+wind_speed
+
+Wind speed
+
+pressure
+
+Atmospheric pressure
+
+rainfall
+
+Rainfall
+
+The model predicts only PM2.5 concentrations for the next 24 hourly time steps.
+
+2. DINOv3 Backbone Integration
+
+DINOv3 is a vision foundation model designed to learn visual representations from images. In this experimental approach, historical time-series data must be transformed into an appropriate image-like representation before being processed by the DINOv3 backbone.
+
+The extracted representations can then be integrated into the forecasting architecture. SOFTS is used for temporal modeling and future prediction according to the implemented model design.
+
+Implementation note: The actual feature transformation and connection between DINOv3 and SOFTS must match the model code. The integration should be validated through tensor-shape checks, training, and evaluation.
+
+3. Updated Loss Function
+
+The loss function measures the difference between predicted and actual PM2.5 concentrations. The training objective must match the loss implemented in the training code.
+
+For reference, the standard Mean Squared Error (MSE) objective for a batch of 24-step forecasts is:
+
+\frac{1}{24B}
+\sum_{b=1}^{B}
+\sum_{t=1}^{24}
+\left(y_{b,t}-\hat{y}_{b,t}\right)^2
+$$
+
+where:
+
+(B) is the batch size.
+
+(y_{b,t}) is the actual PM2.5 concentration for sample (b) at forecast step (t).
+
+(\hat{y}_{b,t}) is the predicted PM2.5 concentration.
+
+This equation is provided as a standard MSE reference. It must be replaced with the actual updated loss equation if the implementation uses a different loss function or a combination of losses.
+
+4. Kaggle Dataset
+
+Public Kaggle dataset: [Insert the actual public Kaggle dataset URL here]
+
+The dataset documentation should identify the data source, collection period, variables, measurement units, and preprocessing procedures.
+
+The data preparation pipeline includes:
+
+Loading or collecting air-quality and meteorological observations.
+
+Aligning records using hourly timestamps.
+
+Handling missing values according to the preprocessing configuration.
+
+Detecting and handling outliers using explicit criteria.
+
+Constructing historical input windows and future prediction targets.
+
+Preparing processed data for model training, evaluation, and inference.
+
+The forecasting samples follow this structure:
+
+$$
+X_b \in \mathbb{R}^{96 \times 7}
+$$
+
+$$
+Y_b \in \mathbb{R}^{24 \times 1}
+$$
+
+Each input window contains 96 consecutive hourly observations, while the target contains the next 24 hourly PM2.5 values.
+
+Private raw data and intermediate files should remain outside the public release unless they are explicitly intended for distribution.
+
+5. Streamlit PM2.5 Forecasting Application
+
+The project provides a Streamlit application for demonstrating PM2.5 forecasting.
+
+Live application: https://timeserieappfts-gpfkmqdj9hil3agwv7dsne.streamlit.app/
+
+To run the application locally from the repository root:
+
+streamlit run softs_pm25_deploy/app.py
+
+This command assumes that the application file exists at the specified path and that the required dependencies are installed.
+
+Predictions displayed by the application should be generated through model inference using the trained model and its associated preprocessing pipeline.
+
+6. Training and Evaluation
+
+Training and evaluation commands depend on the scripts available in the repository. Verify the actual filenames before running the experiments.
+
+The experimental workflow should verify that:
+
+The DINOv3 backbone and pretrained weights are loaded correctly.
+
+The DINOv3 feature extractor is connected to the forecasting model.
+
+Input and output dimensions match the forecasting configuration.
+
+The updated loss function is applied during training.
+
+Training, validation, and test data are separated appropriately.
+
+Evaluation uses data not used for model fitting.
+
+Recommended regression metrics include Mean Absolute Error (MAE) and Root Mean Squared Error (RMSE).
+
+Mean Absolute Error:
+
+\frac{1}{N}
+\sum_{i=1}^{N}
+\left|y_i-\hat{y}_i\right|
+$$
+
+Root Mean Squared Error:
+
+\sqrt{
+\frac{1}{N}
+\sum_{i=1}^{N}
+\left(y_i-\hat{y}_i\right)^2
+}
+$$
+
+Lower MAE and RMSE values indicate smaller prediction errors on the evaluated dataset.
+
+7. Reproducibility and Limitations
+
+DINOv3 is primarily designed for visual representation learning. Applying it to time-series forecasting requires an appropriate representation strategy and does not automatically guarantee better forecasting performance.
+
+The experimental results should be compared with a suitable SOFTS baseline using the same data splits, forecasting horizon, and evaluation metrics.
+
+For reproducibility, document the dataset version, preprocessing configuration, model checkpoint, training parameters, loss function, and evaluation results.
+
+8. References
+
+SOFTS: Efficient Multivariate Time Series Forecasting with Series-Core Fusion. https://github.com/Secilia-Cxy/SOFTS
+
+DINOv3 official repository. https://github.com/facebookresearch/dinov3
+
+DINOv3 pretrained model access. https://ai.meta.com/resources/models-and-libraries/dinov3-downloads/
