@@ -162,6 +162,9 @@ The loss function measures the difference between predicted and actual PM2.5 con
 
 For reference, the standard Mean Squared Error (MSE) objective for a batch of 24-step forecasts is:
 
+$$
+\mathcal{L}_{\mathrm{MSE}}
+=
 \frac{1}{24B}
 \sum_{b=1}^{B}
 \sum_{t=1}^{24}
@@ -170,11 +173,9 @@ $$
 
 where:
 
-(B) is the batch size.
-
-(y_{b,t}) is the actual PM2.5 concentration for sample (b) at forecast step (t).
-
-(\hat{y}_{b,t}) is the predicted PM2.5 concentration.
+- \(B\) is the batch size.
+- \(y_{b,t}\) is the actual PM2.5 concentration for sample \(b\) at forecast step \(t\).
+- \(\hat{y}_{b,t}\) is the predicted PM2.5 concentration.
 
 This equation is provided as a standard MSE reference. It must be replaced with the actual updated loss equation if the implementation uses a different loss function or a combination of losses.
 
@@ -246,15 +247,21 @@ Evaluation uses data not used for model fitting.
 
 Recommended regression metrics include Mean Absolute Error (MAE) and Root Mean Squared Error (RMSE).
 
-Mean Absolute Error:
+**Mean Absolute Error (MAE):**
 
+$$
+\mathrm{MAE}
+=
 \frac{1}{N}
 \sum_{i=1}^{N}
 \left|y_i-\hat{y}_i\right|
 $$
 
-Root Mean Squared Error:
+**Root Mean Squared Error (RMSE):**
 
+$$
+\mathrm{RMSE}
+=
 \sqrt{
 \frac{1}{N}
 \sum_{i=1}^{N}
