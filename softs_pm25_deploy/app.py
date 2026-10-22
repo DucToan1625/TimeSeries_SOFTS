@@ -2,6 +2,8 @@
 import sys
 from pathlib import Path
 from types import SimpleNamespace
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
 import numpy as np
 import pandas as pd
@@ -15,7 +17,7 @@ import torch
 # ============================================================
 
 st.set_page_config(
-    page_title="Air Quality Forecast",
+    page_title="Hanoi Air Intelligence",
     page_icon="🌫️",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -23,159 +25,206 @@ st.set_page_config(
 
 
 # ============================================================
-# 2. PROFESSIONAL UI STYLING
+# 2. GLOBAL STYLE
 # ============================================================
 
-st.markdown("""
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+st.markdown(
+    """
+    <style>
+    .stApp,
+    [data-testid="stAppViewContainer"],
+    [data-testid="stMain"],
+    [data-testid="stMainBlockContainer"] {
+        background-color: #F3F6FA !important;
+        color: #183247 !important;
+    }
 
-html, body, [class*="css"] {
-    font-family: 'Inter', sans-serif;
-}
+    .block-container {
+        max-width: 1800px;
+        padding: 1rem 1.5rem 1rem 1.5rem;
+    }
 
-.stApp {
-    background: #0e1117;
-    color: #f1f5f9;
-}
+    h1, h2, h3, h4, h5, p, label {
+        color: #183247 !important;
+    }
 
-.block-container {
-    max-width: 1500px;
-    padding: 2rem 2rem 2.5rem 2rem;
-}
+    [data-testid="stMarkdownContainer"] p,
+    [data-testid="stMarkdownContainer"] li {
+        color: #183247 !important;
+    }
 
-h1 {
-    font-size: 2.1rem !important;
-    font-weight: 800 !important;
-    letter-spacing: -0.8px;
-}
+    [data-testid="stWidgetLabel"],
+    [data-testid="stWidgetLabel"] *,
+    [data-testid="stWidgetLabel"] p {
+        color: #183247 !important;
+        opacity: 1 !important;
+        font-weight: 600 !important;
+    }
 
-h2, h3 {
-    font-weight: 700 !important;
-}
+    [data-testid="stCaptionContainer"],
+    [data-testid="stCaptionContainer"] * {
+        color: #52697D !important;
+    }
 
-header[data-testid="stHeader"] {
-    background: transparent;
-}
+    .hero {
+        background: linear-gradient(115deg, #164E70, #13849A);
+        padding: 18px 24px;
+        border-radius: 15px;
+        margin-bottom: 18px;
+    }
 
-.section-title {
-    display: flex;
-    align-items: center;
-    font-size: 1.2rem;
-    font-weight: 750;
-    margin-bottom: 24px;
-    color: #f8fafc;
-}
+    .hero h1 {
+        color: #FFFFFF !important;
+        font-size: 1.8rem !important;
+        margin: 0 0 7px 0;
+    }
 
-.step {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    min-width: 32px;
-    background: #2864ed;
-    color: #ffffff;
-    border-radius: 50%;
-    font-size: 13px;
-    font-weight: 700;
-    margin-right: 12px;
-}
+    .hero p {
+        color: #FFFFFF !important;
+        margin: 0;
+        font-size: 14px;
+    }
 
-.info-card {
-    background: #171c26;
-    border: 1px solid #283244;
-    border-radius: 14px;
-    padding: 18px;
-    margin-bottom: 14px;
-}
+    .section-title {
+        color: #183247 !important;
+        font-size: 1.15rem;
+        font-weight: 750;
+        margin: 8px 0 12px 0;
+    }
 
-.info-title {
-    color: #a6b4cb;
-    font-size: 0.85rem;
-    font-weight: 500;
-    margin-bottom: 8px;
-}
+    /* Selectbox */
+    [data-baseweb="select"] > div {
+        background-color: #FFFFFF !important;
+        border: 1px solid #AABBCD !important;
+        border-radius: 8px !important;
+        min-height: 42px !important;
+    }
 
-.info-value {
-    color: #f8fafc;
-    font-size: 1.55rem;
-    font-weight: 750;
-}
+    [data-baseweb="select"] *,
+    [data-baseweb="select"] input,
+    [data-baseweb="select"] [role="combobox"] {
+        color: #183247 !important;
+        -webkit-text-fill-color: #183247 !important;
+        opacity: 1 !important;
+    }
 
-.info-description {
-    color: #94a3b8;
-    font-size: 0.82rem;
-    margin-top: 5px;
-}
+    [data-baseweb="select"] svg {
+        fill: #183247 !important;
+        color: #183247 !important;
+    }
 
-div.stButton > button {
-    width: 100%;
-    min-height: 52px;
-    background: #2864ed;
-    color: #ffffff;
-    border: none;
-    border-radius: 12px;
-    font-weight: 700;
-    transition: background 0.2s ease;
-}
+    /* Dropdown options */
+    [data-baseweb="popover"],
+    [data-baseweb="popover"] *,
+    [role="listbox"],
+    [role="option"] {
+        background-color: #FFFFFF !important;
+        color: #183247 !important;
+        -webkit-text-fill-color: #183247 !important;
+    }
 
-div.stButton > button:hover {
-    background: #1d4ed8;
-    color: #ffffff;
-    border: none;
-}
+    [role="option"]:hover {
+        background-color: #E7F1FA !important;
+    }
 
-div[data-testid="stMetric"] {
-    background: #171c26;
-    padding: 17px;
-    border: 1px solid #283244;
-    border-radius: 14px;
-}
+    /* Forecast cards */
+    .forecast-card {
+        background: #FFFFFF;
+        border: 1px solid #D8E2EC;
+        border-radius: 9px;
+        padding: 9px 4px;
+        min-height: 94px;
+        text-align: center;
+        overflow-wrap: anywhere;
+    }
 
-div[data-testid="stMetricLabel"] {
-    color: #a6b4cb;
-}
+    .forecast-time {
+        color: #183247 !important;
+        font-size: 13px;
+        font-weight: 750;
+    }
 
-div[data-testid="stMetricValue"] {
-    color: #f8fafc;
-}
+    .forecast-date {
+        color: #52697D !important;
+        font-size: 10px;
+        margin-top: 3px;
+    }
 
-div[data-testid="stDataFrame"] {
-    border: 1px solid #283244;
-    border-radius: 12px;
-    overflow: hidden;
-}
+    .forecast-value {
+        color: #1769AA !important;
+        font-size: 18px;
+        font-weight: 800;
+        margin-top: 6px;
+    }
 
-div[data-testid="stAlert"] {
-    border-radius: 12px;
-}
+    .forecast-unit {
+        color: #52697D !important;
+        font-size: 10px;
+    }
 
-hr {
-    border-color: #283244;
-}
+    /* Buttons */
+    div.stButton > button,
+    div.stDownloadButton > button {
+        background: #1769AA !important;
+        color: #FFFFFF !important;
+        border: 1px solid #1769AA !important;
+        border-radius: 9px !important;
+        min-height: 42px;
+        font-weight: 700;
+    }
 
-footer {
-    visibility: hidden;
-}
+    div.stButton > button *,
+    div.stDownloadButton > button * {
+        color: #FFFFFF !important;
+        -webkit-text-fill-color: #FFFFFF !important;
+    }
 
-#MainMenu {
-    visibility: hidden;
-}
+    div.stButton > button:hover,
+    div.stDownloadButton > button:hover {
+        background: #125487 !important;
+        border-color: #125487 !important;
+    }
 
-.app-footer {
-    color: #64748b;
-    font-size: 0.8rem;
-    text-align: center;
-    padding-top: 12px;
-}
+    /* Metric cards */
+    [data-testid="stMetric"] {
+        background: #FFFFFF;
+        border: 1px solid #D8E2EC;
+        border-radius: 11px;
+        padding: 10px;
+    }
 
-</style>
-""", unsafe_allow_html=True)
+    [data-testid="stMetricLabel"],
+    [data-testid="stMetricLabel"] * {
+        color: #52697D !important;
+    }
+
+    [data-testid="stMetricValue"],
+    [data-testid="stMetricValue"] * {
+        color: #183247 !important;
+    }
+
+    [data-testid="stAlert"] {
+        border-radius: 9px;
+    }
+
+    hr {
+        border-color: #D8E2EC !important;
+    }
+
+    .footer {
+        color: #52697D !important;
+        text-align: center;
+        font-size: 12px;
+        padding-top: 8px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 
 # ============================================================
-# 3. LOCATE THE SOFTS PROJECT
+# 3. FIND ORIGINAL SOFTS PROJECT
 # ============================================================
 
 APP_DIR = Path(__file__).resolve().parent
@@ -193,19 +242,24 @@ ROOT = next(
 
 if ROOT is None:
     st.error(
-        "The application could not locate the SOFTS project files. "
-        "Please verify the project directory structure."
+        "SOFTS project files could not be located. "
+        "Please check the project directory."
     )
     st.stop()
 
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+
+# ============================================================
+# 4. PATHS AND CONSTANTS
+# ============================================================
+
 DATA_DIR = ROOT / "data"
 SCALER_PATH = DATA_DIR / "scaler_stats.csv"
 DATASET_PATH = DATA_DIR / "windows_96_to_24.npz"
 
-CHECKPOINT_DIR = (
+CHECKPOINT_PATH = (
     ROOT
     / "checkpoints"
     / (
@@ -213,9 +267,8 @@ CHECKPOINT_DIR = (
         "sl96_ll48_pl24_dm128_el2_dl1_df256_fc1_"
         "ebtimeF_dtTrue_test"
     )
+    / "checkpoint.pth"
 )
-
-CHECKPOINT_PATH = CHECKPOINT_DIR / "checkpoint.pth"
 
 FEATURES = [
     "pm25",
@@ -227,9 +280,69 @@ FEATURES = [
     "rainfall",
 ]
 
+FORECAST_HOURS = 24
+REFERENCE_LEVEL = 50.0
+TIMEZONE = ZoneInfo("Asia/Ho_Chi_Minh")
+
 
 # ============================================================
-# 4. LOAD SCALER STATISTICS
+# 5. HEADER
+# ============================================================
+
+st.markdown(
+    """
+    <div class="hero">
+        <h1>🌫️ Hanoi Air Intelligence</h1>
+        <p>
+            Understand air quality and explore the next 24 hours
+            of PM2.5 forecasts in Hanoi.
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+st.markdown(
+    '<div class="section-title">Air Quality Forecast</div>',
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# 6. AREA SELECTION
+# ============================================================
+
+AREAS = [
+    "Hanoi — City-wide",
+    "Ba Dinh",
+    "Hoan Kiem",
+    "Dong Da",
+    "Cau Giay",
+    "Hai Ba Trung",
+    "Thanh Xuan",
+    "Long Bien",
+    "Nam Tu Liem",
+    "Bac Tu Liem",
+    "Ha Dong",
+    "Tay Ho",
+    "Hoang Mai",
+    "Thanh Tri",
+    "Gia Lam",
+    "Dong Anh",
+    "Soc Son",
+    "Son Tay",
+]
+
+selected_area = st.selectbox(
+    "Select Area",
+    options=AREAS,
+    index=0,
+    key="selected_area",
+)
+
+
+# ============================================================
+# 7. SCALER STATISTICS
 # ============================================================
 
 def normalize_name(name):
@@ -246,53 +359,98 @@ def normalize_name(name):
 def load_scaler():
     if not SCALER_PATH.exists():
         raise FileNotFoundError(
-            "The scaler statistics file could not be found."
+            f"Scaler statistics file not found: {SCALER_PATH}"
         )
 
     df = pd.read_csv(SCALER_PATH)
 
-    required_columns = {"feature", "mean", "scale"}
+    required = {"feature", "mean", "scale"}
 
-    if not required_columns.issubset(df.columns):
+    if not required.issubset(df.columns):
         raise ValueError(
-            "The scaler file must contain feature, mean, and scale columns."
+            "scaler_stats.csv must contain feature, mean and scale."
         )
 
     df["feature_norm"] = df["feature"].map(normalize_name)
     df = df.set_index("feature_norm")
 
-    missing = [
-        feature for feature in FEATURES
-        if feature not in df.index
-    ]
+    missing = [f for f in FEATURES if f not in df.index]
 
     if missing:
         raise ValueError(
-            f"Missing scaler statistics for: {', '.join(missing)}"
+            "Missing scaler statistics for: " + ", ".join(missing)
         )
+
+    for feature in FEATURES:
+        mean = float(df.loc[feature, "mean"])
+        scale = float(df.loc[feature, "scale"])
+
+        if not np.isfinite(mean) or not np.isfinite(scale):
+            raise ValueError(
+                f"Invalid scaler statistics for {feature}."
+            )
+
+        if scale <= 0:
+            raise ValueError(
+                f"Scaler scale must be positive for {feature}."
+            )
 
     return df
 
 
 # ============================================================
-# 5. LOAD THE TRAINED SOFTS MODEL
+# 8. LOAD TEST WINDOWS
+# ============================================================
+
+@st.cache_data(show_spinner=False)
+def load_test_data():
+    if not DATASET_PATH.exists():
+        raise FileNotFoundError(
+            f"Test dataset not found: {DATASET_PATH}"
+        )
+
+    with np.load(DATASET_PATH) as data:
+        if "X_test" not in data.files:
+            raise ValueError(
+                "The dataset does not contain X_test."
+            )
+
+        x_test = np.asarray(data["X_test"], dtype=np.float32)
+
+    if x_test.ndim != 3 or x_test.shape[1:] != (96, 7):
+        raise ValueError(
+            f"Expected X_test shape (N, 96, 7), got {x_test.shape}."
+        )
+
+    if len(x_test) == 0:
+        raise ValueError("The test dataset is empty.")
+
+    if not np.isfinite(x_test).all():
+        raise ValueError("X_test contains NaN or infinite values.")
+
+    return x_test
+
+
+# ============================================================
+# 9. LOAD SOFTS CHECKPOINT
 # ============================================================
 
 @st.cache_resource(show_spinner=False)
 def load_model():
     if not CHECKPOINT_PATH.exists():
         raise FileNotFoundError(
-            "The trained model checkpoint could not be found. "
-            "Please verify the checkpoint directory."
+            "Trained checkpoint not found:\n"
+            f"{CHECKPOINT_PATH}"
         )
 
     try:
         from models.SOFTS import Model
     except Exception as exc:
         raise ImportError(
-            f"Unable to import the SOFTS model: {exc}"
+            f"Could not import SOFTS: {exc}"
         ) from exc
 
+    # Must match the configuration used to train the checkpoint.
     args = SimpleNamespace(
         task_name="long_term_forecast",
         seq_len=96,
@@ -341,88 +499,43 @@ def load_model():
         ):
             checkpoint = checkpoint["model"]
 
-    model.load_state_dict(checkpoint)
+    if not isinstance(checkpoint, dict):
+        raise ValueError("Invalid checkpoint state dictionary.")
+
+    model.load_state_dict(checkpoint, strict=True)
     model.eval()
 
     return model
 
 
 # ============================================================
-# 6. LOAD INTEGRATED HISTORICAL DATA
+# 10. GENERATE FORECAST FOR A RANDOM TEST WINDOW
 # ============================================================
 
-@st.cache_data(show_spinner=False)
-def load_test_data():
-    if not DATASET_PATH.exists():
-        raise FileNotFoundError(
-            "The integrated forecasting dataset could not be found."
-        )
-
-    with np.load(DATASET_PATH) as dataset:
-        if "X_test" not in dataset.files:
-            raise ValueError(
-                "The dataset does not contain the required input data."
-            )
-
-        x_test = np.asarray(
-            dataset["X_test"],
-            dtype=np.float32,
-        )
-
-    if x_test.ndim != 3 or x_test.shape[1:] != (96, 7):
-        raise ValueError(
-            "The input data must have 96 time steps and 7 features."
-        )
-
-    if len(x_test) == 0:
-        raise ValueError("The integrated dataset is empty.")
-
-    return x_test
-
-
-# ============================================================
-# 7. GENERATE PM2.5 FORECAST
-# ============================================================
-
-def run_forecast(sample_index=0):
+def run_forecast(sample_index):
     scaler_df = load_scaler()
     model = load_model()
     x_test = load_test_data()
 
-    sample_index = min(
-        max(int(sample_index), 0),
-        len(x_test) - 1,
-    )
+    if not 0 <= sample_index < len(x_test):
+        raise IndexError("Selected test-window index is out of range.")
 
     x_scaled = x_test[sample_index]
 
     means = np.array(
-        [
-            float(scaler_df.loc[feature, "mean"])
-            for feature in FEATURES
-        ],
+        [float(scaler_df.loc[f, "mean"]) for f in FEATURES],
         dtype=np.float32,
     )
 
     scales = np.array(
-        [
-            float(scaler_df.loc[feature, "scale"])
-            for feature in FEATURES
-        ],
+        [float(scaler_df.loc[f, "scale"]) for f in FEATURES],
         dtype=np.float32,
     )
 
-    if np.any(scales <= 0):
-        raise ValueError(
-            "Invalid scaling statistics. Scale values must be positive."
-        )
-
-    encoder_input = torch.from_numpy(
-        x_scaled
-    ).unsqueeze(0)
+    encoder_input = torch.from_numpy(x_scaled).unsqueeze(0)
 
     decoder_input = torch.zeros(
-        (1, 24, 1),
+        (1, FORECAST_HOURS, 1),
         dtype=torch.float32,
     )
 
@@ -434,75 +547,62 @@ def run_forecast(sample_index=0):
             None,
         )
 
-        if isinstance(output, tuple):
-            output = output[0]
+    if isinstance(output, (tuple, list)):
+        output = output[0]
 
-    if output.ndim != 3 or output.shape[1] != 24:
+    if output.ndim != 3:
         raise ValueError(
-            "The model returned an unexpected forecast shape."
+            f"Unexpected model output shape: {tuple(output.shape)}"
+        )
+
+    if output.shape[1] != FORECAST_HOURS:
+        raise ValueError(
+            "The model did not return 24 forecast steps. "
+            f"Actual shape: {tuple(output.shape)}"
         )
 
     if output.shape[-1] == 7:
         output = output[:, :, 0:1]
     elif output.shape[-1] != 1:
         raise ValueError(
-            "The model output does not contain a valid PM2.5 channel."
+            "Expected one PM2.5 output channel or seven feature "
+            f"channels. Actual shape: {tuple(output.shape)}"
         )
 
     prediction_scaled = (
-        output.detach().cpu().numpy().reshape(24)
+        output.detach().cpu().numpy().reshape(FORECAST_HOURS)
     )
 
-    # Convert standardized PM2.5 values back to original units.
-    forecast = (
-        prediction_scaled * scales[0] + means[0]
-    )
-
-    history = (
-        x_scaled[:, 0] * scales[0] + means[0]
-    )
-
-    forecast = np.maximum(forecast, 0.0)
-    history = np.maximum(history, 0.0)
+    forecast = prediction_scaled * scales[0] + means[0]
+    history = x_scaled[:, 0] * scales[0] + means[0]
 
     return (
-        history.astype(float),
-        forecast.astype(float),
+        np.maximum(history, 0.0).astype(float),
+        np.maximum(forecast, 0.0).astype(float),
+        len(x_test),
     )
 
 
 # ============================================================
-# 8. FORECAST VISUALIZATION
+# 11. FORECAST CHART
 # ============================================================
 
 def build_chart(history, forecast):
-    fig, ax = plt.subplots(
-        figsize=(11, 4.6),
-        dpi=130,
-    )
+    fig, ax = plt.subplots(figsize=(10, 5), dpi=120)
 
-    fig.patch.set_facecolor("#ffffff")
-    ax.set_facecolor("#f8fafc")
+    fig.patch.set_facecolor("#FFFFFF")
+    ax.set_facecolor("#F8FAFC")
 
-    historical_hours = np.arange(-95, 1)
+    history_hours = np.arange(-95, 1)
     forecast_hours = np.arange(1, 25)
 
-    ax.axvspan(
-        -95, 0,
-        color="#3b82f6",
-        alpha=0.05,
-    )
-
-    ax.axvspan(
-        1, 24,
-        color="#f59e0b",
-        alpha=0.10,
-    )
+    ax.axvspan(-95, 0, color="#3B82F6", alpha=0.06)
+    ax.axvspan(1, 24, color="#F59E0B", alpha=0.10)
 
     ax.plot(
-        historical_hours,
+        history_hours,
         history,
-        color="#2864ff",
+        color="#2864FF",
         linewidth=2,
         label="Historical PM2.5",
     )
@@ -510,7 +610,7 @@ def build_chart(history, forecast):
     ax.plot(
         [0, 1],
         [history[-1], forecast[0]],
-        color="#f59e0b",
+        color="#E58B13",
         linestyle="--",
         linewidth=1.5,
     )
@@ -518,7 +618,7 @@ def build_chart(history, forecast):
     ax.plot(
         forecast_hours,
         forecast,
-        color="#f59e0b",
+        color="#E58B13",
         marker="o",
         markersize=3,
         linewidth=2,
@@ -526,19 +626,14 @@ def build_chart(history, forecast):
     )
 
     ax.axhline(
-        50,
-        color="#64748b",
+        REFERENCE_LEVEL,
+        color="#64748B",
         linestyle="--",
         linewidth=1,
-        label="Reference Level: 50 µg/m³",
+        label=f"Reference: {REFERENCE_LEVEL:.0f} µg/m³",
     )
 
-    ax.axvline(
-        0,
-        color="#475569",
-        linestyle=":",
-        linewidth=1.2,
-    )
+    ax.axvline(0, color="#64748B", linestyle=":", linewidth=1)
 
     peak_index = int(np.argmax(forecast))
     peak_value = float(forecast[peak_index])
@@ -546,264 +641,277 @@ def build_chart(history, forecast):
     ax.scatter(
         [peak_index + 1],
         [peak_value],
-        color="#f59e0b",
+        color="#E58B13",
         edgecolors="white",
-        linewidths=1,
-        s=50,
+        s=45,
         zorder=5,
     )
 
-    ax.annotate(
-        f"{peak_value:.1f} µg/m³",
-        (peak_index + 1, peak_value),
-        xytext=(0, 10),
-        textcoords="offset points",
-        ha="center",
-        fontsize=8,
-    )
-
     ax.set_xlim(-95, 24)
+    ax.set_xlabel("Relative Time (Hours)", color="#183247")
+    ax.set_ylabel("PM2.5 (µg/m³)", color="#183247")
 
-    ax.set_xlabel("Relative Time (Hours)")
-    ax.set_ylabel("PM2.5 (µg/m³)")
-
-    ax.set_xticks(
-        [-95, -72, -48, -24, 0, 6, 12, 18, 24]
-    )
-
+    ax.set_xticks([-95, -72, -48, -24, 0, 6, 12, 18, 24])
     ax.set_xticklabels(
         [
-            "-95h", "-72h", "-48h", "-24h",
-            "Now", "+6h", "+12h", "+18h", "+24h",
+            "-95h", "-72h", "-48h", "-24h", "Now",
+            "+6h", "+12h", "+18h", "+24h",
         ]
     )
 
+    ax.tick_params(colors="#475569")
     ax.grid(axis="y", alpha=0.2)
+
+    for spine in ax.spines.values():
+        spine.set_color("#CBD5E1")
 
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
 
-    ax.legend(
-        loc="upper left",
-        ncol=2,
-        frameon=False,
-        fontsize=8,
-    )
+    ax.legend(loc="upper left", frameon=False, fontsize=8)
 
     fig.tight_layout()
-
     return fig
 
 
 # ============================================================
-# 9. APPLICATION HEADER
-# ============================================================
-
-st.title("Air Quality Forecast")
-
-st.caption(
-    "PM2.5 Forecasting · Powered by SOFTS"
-)
-
-st.divider()
-
-
-# ============================================================
-# 10. APPLICATION STATE
+# 12. SESSION STATE
 # ============================================================
 
 if "forecast_result" not in st.session_state:
     st.session_state.forecast_result = None
 
+if "forecast_error" not in st.session_state:
+    st.session_state.forecast_error = None
+
 
 # ============================================================
-# 11. MAIN DASHBOARD
+# 13. GENERATE FORECAST BUTTON
 # ============================================================
 
-left, right = st.columns(
-    [0.8, 2.0],
-    gap="large",
-)
+if st.button(
+    "▶ Generate Forecast",
+    type="primary",
+    use_container_width=True,
+):
+    st.session_state.forecast_result = None
+    st.session_state.forecast_error = None
 
+    try:
+        with st.spinner(
+            "Selecting a random test window and generating forecast..."
+        ):
+            total_windows = len(load_test_data())
 
-# ------------------------------------------------------------
-# LEFT PANEL: CONTROLS AND KEY METRICS
-# ------------------------------------------------------------
-
-with left:
-    st.markdown(
-        '<div class="section-title">'
-        '<span class="step">1</span>Run Forecast</div>',
-        unsafe_allow_html=True,
-    )
-
-    st.markdown("#### Forecast Configuration")
-
-    st.markdown(
-        """
-        <div class="info-card">
-            <div class="info-title">Input Variables</div>
-            <div class="info-value">7 Features</div>
-            <div class="info-description">
-                Multivariate environmental data
-            </div>
-        </div>
-
-        <div class="info-card">
-            <div class="info-title">Historical Window</div>
-            <div class="info-value">96 Hours</div>
-            <div class="info-description">
-                Historical observations
-            </div>
-        </div>
-
-        <div class="info-card">
-            <div class="info-title">Forecast Horizon</div>
-            <div class="info-value">24 Hours</div>
-            <div class="info-description">
-                Future PM2.5 concentrations
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    run_clicked = st.button(
-        "▶  RUN FORECAST",
-        use_container_width=True,
-    )
-
-    if run_clicked:
-        try:
-            with st.spinner(
-                "Generating PM2.5 forecast..."
-            ):
-                history, forecast = run_forecast(
-                    sample_index=0
-                )
-
-                st.session_state.forecast_result = {
-                    "history": history,
-                    "forecast": forecast,
-                }
-
-        except Exception as exc:
-            st.session_state.forecast_result = None
-
-            st.error(
-                f"Forecast generation failed: {exc}"
+            random_index = int(
+                np.random.default_rng().integers(0, total_windows)
             )
 
-    result = st.session_state.forecast_result
+            history, forecast, _ = run_forecast(random_index)
 
-    if result is not None:
-        history = result["history"]
-        forecast = result["forecast"]
+            st.session_state.forecast_result = {
+                "history": history,
+                "forecast": forecast,
+                "sample_index": random_index,
+                "area": selected_area,
+            }
 
-        peak_index = int(np.argmax(forecast))
-        peak_value = float(forecast[peak_index])
-        exceed_hours = int(np.sum(forecast > 50))
-
-        st.divider()
-
-        st.markdown("### Forecast Summary")
-
-        st.metric(
-            "Peak PM2.5",
-            f"{peak_value:.1f} µg/m³",
-            f"Hour +{peak_index + 1}",
-        )
-
-        st.metric(
-            "PM2.5 After 24 Hours",
-            f"{forecast[-1]:.1f} µg/m³",
-        )
-
-        st.metric(
-            "Hours Above 50 µg/m³",
-            f"{exceed_hours} / 24",
-        )
+    except Exception as exc:
+        st.session_state.forecast_error = str(exc)
 
 
-# ------------------------------------------------------------
-# RIGHT PANEL: CHART AND FORECAST DETAILS
-# ------------------------------------------------------------
+# ============================================================
+# 14. DISPLAY ERRORS
+# ============================================================
 
-with right:
-    st.markdown(
-        '<div class="section-title">'
-        '<span class="step">2</span>Forecast Results</div>',
-        unsafe_allow_html=True,
+if st.session_state.forecast_error:
+    st.error(
+        "The forecast could not be generated. "
+        "Please check the model configuration and checkpoint."
     )
 
-    result = st.session_state.forecast_result
+    with st.expander("Technical Details", expanded=True):
+        st.code(st.session_state.forecast_error, language="text")
 
-    if result is None:
+
+# ============================================================
+# 15. DISPLAY RESULTS
+# ============================================================
+
+result = st.session_state.forecast_result
+
+if result is None:
+    if not st.session_state.forecast_error:
         st.info(
-            "Run the forecast to view the PM2.5 trend "
-            "and the next 24 hours of predictions."
+            "Select an area and click Generate Forecast to view "
+            "the forecast for a randomly selected test window."
         )
 
-    else:
-        history = result["history"]
-        forecast = result["forecast"]
+else:
+    history = result["history"]
+    forecast = result["forecast"]
+    sample_index = result["sample_index"]
+    area = result["area"]
 
-        # Main chart
+    average_value = float(np.mean(forecast))
+    peak_index = int(np.argmax(forecast))
+    peak_value = float(forecast[peak_index])
+    end_value = float(forecast[-1])
+
+    hours_above = int(np.sum(forecast > REFERENCE_LEVEL))
+
+    # Summary
+    st.markdown(f"### Forecast Summary — {area}")
+
+    metric1, metric2, metric3, metric4 = st.columns(4)
+
+    metric1.metric(
+        "Average PM2.5",
+        f"{average_value:.1f} µg/m³",
+    )
+
+    metric2.metric(
+        "Peak PM2.5",
+        f"{peak_value:.1f} µg/m³",
+        f"Forecast step {peak_index + 1}",
+    )
+
+    metric3.metric(
+        "After 24 Hours",
+        f"{end_value:.1f} µg/m³",
+    )
+
+    metric4.metric(
+        "Hours Above Reference",
+        f"{hours_above}/24",
+    )
+
+    # Display clock times in Hanoi timezone.
+    # These times are not linked to timestamps in X_test.
+    now_hanoi = datetime.now(TIMEZONE)
+
+    first_time = (
+        now_hanoi.replace(minute=0, second=0, microsecond=0)
+        + timedelta(hours=1)
+    )
+
+    forecast_times = [
+        first_time + timedelta(hours=i)
+        for i in range(FORECAST_HOURS)
+    ]
+
+    report = pd.DataFrame(
+        {
+            "Date": [t.strftime("%d/%m/%Y") for t in forecast_times],
+            "Time": [t.strftime("%H:%M") for t in forecast_times],
+            "Predicted PM2.5 (µg/m³)": np.round(forecast, 2),
+        }
+    )
+
+    # Side-by-side layout: chart left, all 24 hours right.
+    chart_col, forecast_col = st.columns(
+        [1.35, 1],
+        gap="medium",
+    )
+
+    with chart_col:
         st.markdown("### PM2.5 Forecast Trend")
 
-        fig = build_chart(
-            history,
-            forecast,
-        )
-
-        st.pyplot(
-            fig,
-            use_container_width=True,
-        )
-
+        fig = build_chart(history, forecast)
+        st.pyplot(fig, use_container_width=True)
         plt.close(fig)
 
-        # Forecast details
-        st.markdown("### 24-Hour Forecast Details")
+    with forecast_col:
+        st.markdown("### Next 24 Hours")
+        st.caption("Hanoi local time (UTC+7)")
 
-        report = pd.DataFrame({
-            "Forecast Time": [
-                f"+{hour}h"
-                for hour in range(1, 25)
-            ],
-            "Predicted PM2.5 (µg/m³)": np.round(
-                forecast,
-                2,
-            ),
-        })
+        # Four rows of six cards: 24 hours total.
+        for row_start in range(0, 24, 6):
+            columns = st.columns(6, gap="small")
 
-        st.dataframe(
-            report,
-            use_container_width=True,
-            hide_index=True,
-        )
+            for offset, column in enumerate(columns):
+                index = row_start + offset
+                timestamp = forecast_times[index]
+                value = float(forecast[index])
+
+                with column:
+                    st.markdown(
+                        f"""
+                        <div class="forecast-card">
+                            <div class="forecast-time">
+                                {timestamp.strftime("%H:%M")}
+                            </div>
+                            <div class="forecast-date">
+                                {timestamp.strftime("%d/%m")}
+                            </div>
+                            <div class="forecast-value">
+                                {value:.1f}
+                            </div>
+                            <div class="forecast-unit">
+                                µg/m³
+                            </div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
 
         st.download_button(
-            label="Download Forecast Report",
-            data=report.to_csv(
-                index=False
-            ).encode("utf-8-sig"),
-            file_name="pm25_forecast_24h.csv",
+            "Download Forecast CSV",
+            data=report.to_csv(index=False).encode("utf-8-sig"),
+            file_name="hanoi_pm25_forecast_24h.csv",
             mime="text/csv",
             use_container_width=True,
         )
 
+    
+
+    # Health recommendations
+    st.markdown("### Health Recommendations")
+
+    if average_value <= 15:
+        recommendation = (
+            "The predicted PM2.5 level is relatively low. "
+            "Continue normal activities and monitor local conditions."
+        )
+    elif average_value <= 35:
+        recommendation = (
+            "Sensitive individuals may wish to reduce prolonged "
+            "outdoor exertion if they experience discomfort."
+        )
+    elif average_value <= 55:
+        recommendation = (
+            "Consider reducing prolonged outdoor exertion, "
+            "especially if you are sensitive to air pollution."
+        )
+    elif average_value <= 150:
+        recommendation = (
+            "Consider limiting outdoor exertion. Sensitive groups "
+            "should take additional precautions."
+        )
+    else:
+        recommendation = (
+            "Reduce exposure to outdoor pollution and follow "
+            "current local public-health guidance."
+        )
+
+    st.info(recommendation)
+
+    st.caption(
+        "The 50 µg/m³ reference line is illustrative and is not "
+        "a universal official air-quality threshold."
+    )
+
 
 # ============================================================
-# 12. FOOTER
+# 16. FOOTER
 # ============================================================
 
 st.divider()
 
 st.markdown(
     """
-    <div class="app-footer">
-        Air Quality Forecast · SOFTS Forecasting System
+    <div class="footer">
+        Hanoi Air Intelligence · SOFTS Forecasting System
     </div>
     """,
     unsafe_allow_html=True,
