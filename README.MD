@@ -1,17 +1,15 @@
+
+
 # DINOv3 + SOFTS for Hourly PM2.5 Forecasting (Hanoi)
 
-Extension of the [SOFTS](https://github.com/Secilia-Cxy/SOFTS) forecasting framework (NeurIPS 2024) with an experimental **DINOv3** image branch for 24-hour PM2.5 forecasting in Hanoi.
+An experimental project extending the [SOFTS framework](https://github.com/Secilia-Cxy/SOFTS) with a DINOv3 visual feature extraction branch to explore multimodal hourly PM2.5 forecasting in Hanoi.
 
-- **Who it is for:** researchers and students studying whether visual features (satellite imagery) add information to a time-series forecaster.
-- **What it does:** takes 96 hours of air-quality and weather observations (and, in the DINOv3 variant, a satellite image) and predicts PM2.5 for the next 24 hours.
-- **Live demo:** https://timeserieappfts-gpfkmqdj9hil3agwv7dsne.streamlit.app/
-- **Dataset:** [Hanoi PM2.5 and weather hourly dataset (Kaggle)](https://www.kaggle.com/datasets/dtoaneasy/hanoi-pm2-5-and-weather-hourly-dataset)
+The model uses 96 hours of air-quality and weather data, optionally combined with satellite imagery, to predict PM2.5 concentrations for the next 24 hours.
 
-| Item | Value |
-|---|---|
-| Version | `v0.1` (experimental) <!-- TODO: confirm version tag --> |
-| Last updated | 2026-10-24 |
-| Maintainer | <!-- TODO: name / email --> |
+- **Live Demo:** [Streamlit App](https://timeserieappfts-gpfkmqdj9hil3agwv7dsne.streamlit.app/)
+- **Dataset:** [Kaggle Dataset](https://www.kaggle.com/datasets/dtoaneasy/hanoi-pm2-5-and-weather-hourly-dataset)
+- **Version:** `v0.1` (Experimental)
+- **Last Updated:** 2026-10-24
 
 ---
 
