@@ -98,13 +98,9 @@ LANGUAGES = {
         "generated": "Generated at",
         "no_ground_truth": "N/A",
         "units": "µg/m³",
-        "date_col": "Date",
-        "time_col": "Time",
-        "hour_col": "Forecast time",
-        "range": "Concentration category",
     },
     "Tiếng Việt": {
-        "settings": "Cài đặt dự báo",
+        "settings": "Cấu hình dự báo",
         "model": "Mô hình SOFTS PM2.5",
         "model_caption": "Dữ liệu lịch sử 96 giờ · Dự báo 24 giờ",
         "area": "Chọn khu vực",
@@ -112,10 +108,10 @@ LANGUAGES = {
         "history": "Dữ liệu đầu vào: 96 giờ",
         "timezone": "Múi giờ: Việt Nam · UTC+7",
         "run": "▶  Chạy dự báo",
-        "performance": "Hiệu suất mô hình",
-        "mae_note": "So sánh với giá trị thực tế nếu có nhãn",
-        "mse_note": "Sai số bình phương trung bình nếu có nhãn",
-        "rate_note": "Chỉ số quy ước hiển thị, không phải độ chính xác đã kiểm chứng",
+        "performance": "Hiệu năng mô hình",
+        "mae_note": "So sánh với dữ liệu thực tế nếu có",
+        "mse_note": "Sai số bình phương trung bình nếu có dữ liệu thực tế",
+        "rate_note": "Chỉ số hiển thị, không phải độ chính xác đã xác minh",
         "files": "✓ Đã tìm thấy tệp dự án",
         "chart": "📈  Biểu đồ dự báo",
         "forecast": "🕒  Dự báo 24 giờ",
@@ -123,1291 +119,405 @@ LANGUAGES = {
         "peak": "Cao nhất lúc",
         "average": "PM2.5 trung bình dự báo",
         "reference": "ngưỡng tham chiếu",
-        "above": "Số giờ vượt ngưỡng tham chiếu 50 µg/m³:",
+        "above": "Số giờ vượt ngưỡng tham chiếu 50 µg/m³ khoảng",
         "hours": "giờ",
-        "chart_title": "PM2.5 lịch sử và dự báo 24 giờ",
-        "xlabel": "Giờ địa phương Hà Nội (UTC+7)",
+        "chart_title": "PM2.5 lịch sử và dự báo trong 24 giờ",
+        "xlabel": "Thời gian tại Hà Nội (UTC+7)",
         "ylabel": "PM2.5 (µg/m³)",
         "history_label": "PM2.5 lịch sử",
         "forecast_label": "Dự báo SOFTS",
-        "explanation": "Giải thích AI",
+        "explanation": "Giải thích của AI",
         "forecast_heading": "Dự báo PM2.5 · 24 giờ tiếp theo",
-        "forecast_caption": "Giá trị dự báo theo giờ địa phương Việt Nam (UTC+7).",
-        "data_heading": "Bảng dữ liệu dự báo theo giờ",
-        "data_caption": "24 mốc thời gian dự báo theo giờ địa phương Hà Nội (UTC+7).",
+        "forecast_caption": "Giá trị dự báo theo giờ tại Việt Nam (UTC+7).",
+        "data_heading": "Dữ liệu dự báo theo giờ",
+        "data_caption": "24 mốc thời gian dự báo theo giờ tại Hà Nội (UTC+7).",
         "date": "Ngày",
         "time": "Giờ",
         "predicted": "PM2.5 dự báo (µg/m³)",
-        "download_csv": "⬇  Tải CSV dự báo",
+        "download_csv": "⬇  Tải dữ liệu dự báo CSV",
         "download_png": "⬇  Tải biểu đồ PNG",
         "good": "Tốt",
         "moderate": "Trung bình",
         "high": "Cao",
         "poor": "Kém",
         "error": "Dự báo thất bại",
-        "loading": "Đang chạy dự báo SOFTS...",
+        "loading": "Đang tạo dự báo SOFTS...",
         "init_error": "Không thể khởi tạo hệ thống dự báo.",
         "check_paths": "Kiểm tra thư mục dự án, scaler_stats.csv, windows_96_to_24.npz và checkpoint SOFTS.",
         "footer": "Hanoi Air Intelligence · Dự báo PM2.5 bằng SOFTS · Bản thử nghiệm nghiên cứu",
-        "above_text": "Nồng độ PM2.5 trung bình dự báo vượt ngưỡng tham chiếu 50 µg/m³. Nên theo dõi chất lượng không khí.",
-        "below_text": "Nồng độ PM2.5 trung bình dự báo dưới ngưỡng tham chiếu 50 µg/m³, nhưng một số giờ riêng lẻ vẫn có thể cao hơn.",
-        "generated": "Thời điểm tạo",
+        "above_text": "PM2.5 trung bình dự báo vượt ngưỡng tham chiếu 50 µg/m³. Hãy theo dõi chất lượng không khí.",
+        "below_text": "PM2.5 trung bình dự báo dưới ngưỡng tham chiếu 50 µg/m³, tuy nhiên một số giờ riêng lẻ có thể cao hơn.",
+        "generated": "Thời điểm tạo dự báo",
         "no_ground_truth": "Không có",
         "units": "µg/m³",
-        "date_col": "Ngày",
-        "time_col": "Giờ",
-        "hour_col": "Thời gian dự báo",
-        "range": "Mức nồng độ",
     },
 }
-
-if "language" not in st.session_state:
-    st.session_state.language = "English"
-
-# Compact language selector in the top row
-top_left, top_right = st.columns([0.82, 0.18])
-with top_right:
-    language_choice = st.selectbox(
-        "Language / Ngôn ngữ",
-        ["English", "Tiếng Việt"],
-        index=["English", "Tiếng Việt"].index(st.session_state.language),
-        key="language_selector",
-        label_visibility="collapsed",
-    )
-    st.session_state.language = language_choice
-
-T = LANGUAGES[st.session_state.language]
-
 
 # ============================================================
 # 2. PROJECT PATHS
 # ============================================================
 
-def find_project_root():
-    current_dir = Path(__file__).resolve().parent
-    for candidate in [current_dir, *current_dir.parents]:
-        required = [
-            candidate / "models" / "SOFTS.py",
-            candidate / "data" / "scaler_stats.csv",
-            candidate / "data" / "windows_96_to_24.npz",
-        ]
-        if all(p.exists() for p in required):
-            return candidate
+BASE_DIR = Path(__file__).resolve().parent
+MODEL_DIR = BASE_DIR / "models"
+DATA_DIR = BASE_DIR / "data"
+CHECKPOINT_DIR = BASE_DIR / "checkpoints"
 
-    raise FileNotFoundError(
-        "Could not find project files: models/SOFTS.py, "
-        "data/scaler_stats.csv, data/windows_96_to_24.npz"
-    )
-
-
-try:
-    PROJECT_ROOT = find_project_root()
-except Exception as exc:
-    st.error(f"{T['init_error']} {exc}")
-    st.stop()
-
-DATA_DIR = PROJECT_ROOT / "data"
-CHECKPOINT_DIR = PROJECT_ROOT / "checkpoints"
+MODEL_FILE = MODEL_DIR / "SOFTS.py"
 SCALER_FILE = DATA_DIR / "scaler_stats.csv"
 WINDOW_FILE = DATA_DIR / "windows_96_to_24.npz"
 
-MODEL_FILE = (
+CHECKPOINT_FILE = (
     CHECKPOINT_DIR
-    / (
-        "long_term_forecast_Hanoi_PM25_SOFTS_PM25_ftMS_sl96_ll48_"
-        "pl24_dm128_el2_dl1_df256_fc1_ebtimeF_dtTrue_test"
-    )
+    / "long_term_forecast_Hanoi_PM25_SOFTS_PM25_ftMS_sl96_ll48_pl24_dm128_el2_dl1_df256_fc1_ebtimeF_dtTrue_test"
     / "checkpoint.pth"
 )
 
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
-
-
 # ============================================================
-# 3. SOFTS MODEL CONFIGURATION
-# ============================================================
-
-MODEL_CONFIG = SimpleNamespace(
-    task_name="long_term_forecast",
-    enc_in=7,
-    dec_in=1,
-    c_out=1,
-    seq_len=96,
-    label_len=48,
-    pred_len=24,
-    d_model=128,
-    d_core=128,
-    n_heads=8,
-    e_layers=2,
-    d_layers=1,
-    d_ff=256,
-    dropout=0.1,
-    fc_dropout=0.0,
-    head_dropout=0.0,
-    individual=False,
-    embed="timeF",
-    freq="h",
-    activation="gelu",
-    output_attention=False,
-    use_norm=True,
-    moving_avg=25,
-    factor=1,
-    distil=True,
-    channel_independence=0,
-    decomp_method="moving_avg",
-    top_k=5,
-    num_kernels=6,
-    modes=32,
-    mode_select="random",
-    version="Fourier",
-    L=3,
-    base="legendre",
-    cross_activation="tanh",
-    patch_len=16,
-    stride=8,
-    padding_patch="end",
-    revin=1,
-    affine=0,
-    subtract_last=0,
-    kernel_size=25,
-)
-
-
-# ============================================================
-# 4. CSS
+# 3. CSS — STREAMLIT CLOUD LAYOUT FIX
 # ============================================================
 
 st.markdown(
     """
     <style>
-    :root {
-        color-scheme: light;
+    /* --------------------------------------------------------
+       GLOBAL PAGE
+    -------------------------------------------------------- */
+    html, body, [data-testid="stAppViewContainer"] {
+        background: #f5f7fb !important;
+        color: #172033 !important;
+        font-family: Inter, -apple-system, BlinkMacSystemFont,
+                     "Segoe UI", sans-serif !important;
     }
 
-    .stApp {
-        background: #f4f7fc;
-        color: #17233c;
+    [data-testid="stAppViewContainer"] {
+        overflow-x: hidden !important;
     }
 
-    /* Reserve space for Streamlit's toolbar so the title is not covered */
+    .main .block-container {
+        max-width: 1600px !important;
+        width: 100% !important;
+        padding-top: 1.2rem !important;
+        padding-bottom: 2rem !important;
+        padding-left: clamp(1rem, 3vw, 2.5rem) !important;
+        padding-right: clamp(1rem, 3vw, 2.5rem) !important;
+        overflow: visible !important;
+    }
+
     [data-testid="stHeader"] {
-        height: 2.65rem !important;
-        min-height: 2.65rem !important;
-        background: rgba(244,247,252,.98) !important;
-        z-index: 999990 !important;
+        background: rgba(245, 247, 251, 0.96) !important;
+        z-index: 100 !important;
     }
 
+    /* Hide Streamlit Deploy button where supported */
+    [data-testid="stAppDeployButton"],
+    [data-testid="stDeployButton"],
+    .stDeployButton,
+    button[kind="header"],
+    [data-testid="stToolbar"] button[title*="Deploy"],
+    [data-testid="stToolbar"] button[aria-label*="Deploy"] {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
+
+    /* Keep toolbar from covering the application content */
     [data-testid="stToolbar"] {
         right: 0.5rem !important;
         top: 0.25rem !important;
+        z-index: 101 !important;
     }
 
-    [data-testid="stAppViewBlockContainer"],
-    [data-testid="stMainBlockContainer"],
-    .block-container {
-        max-width: 100% !important;
-        width: 100% !important;
-        padding: 0.45rem 1rem 0.6rem 1rem !important;
-    }
-
-    /* Hide Streamlit Deploy button when the running version supports it */
-    .stAppDeployButton,
-    [data-testid="stAppDeployButton"] {
+    [data-testid="stDecoration"] {
         display: none !important;
-        visibility: hidden !important;
-        width: 0 !important;
     }
 
-    #MainMenu, footer {
-        visibility: hidden !important;
+    /* --------------------------------------------------------
+       HEADINGS AND TEXT
+    -------------------------------------------------------- */
+    h1, h2, h3, h4, h5, h6,
+    p, label, span, small, li {
+        overflow-wrap: anywhere;
     }
 
+    h1, h2, h3 {
+        color: #172554 !important;
+        letter-spacing: -0.025em;
+    }
+
+    [data-testid="stMarkdownContainer"] p,
+    [data-testid="stMarkdownContainer"] li {
+        color: #334155;
+    }
+
+    /* --------------------------------------------------------
+       HERO
+    -------------------------------------------------------- */
     .hero {
-        background: linear-gradient(105deg, #164e70, #10899b);
-        color: white;
-        padding: 12px 20px;
-        border-radius: 13px;
-        margin: 0 0 12px 0;
-        box-shadow: 0 3px 10px rgba(15,68,105,.08);
+        background: linear-gradient(120deg, #ffffff 0%, #edf4ff 100%);
+        border: 1px solid #dbe5f3;
+        border-radius: 20px;
+        padding: 24px 28px;
+        margin-bottom: 18px;
+        box-shadow: 0 8px 28px rgba(15, 23, 42, 0.045);
+        overflow-wrap: anywhere;
     }
 
     .hero-title {
-        font-size: 1.42rem;
-        font-weight: 800;
-        line-height: 1.25;
-        color: #fff;
+        color: #172554;
+        font-size: clamp(1.65rem, 3vw, 2.35rem);
+        line-height: 1.2;
+        font-weight: 850;
+        margin: 0 0 8px 0;
     }
 
     .hero-subtitle {
-        color: #e7f8ff;
-        font-size: .80rem;
-        margin-top: 4px;
+        color: #475569;
+        font-size: 0.98rem;
+        line-height: 1.6;
+        margin: 0;
     }
 
-    .section-title {
-        color: #183247;
-        font-size: 1rem;
-        font-weight: 800;
-        margin: 0 0 9px 0;
+    /* --------------------------------------------------------
+       CARDS AND METRICS
+    -------------------------------------------------------- */
+    [data-testid="stMetric"] {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 14px 16px;
+        min-width: 0 !important;
+        overflow-wrap: anywhere;
+        box-shadow: 0 3px 12px rgba(15, 23, 42, 0.035);
     }
 
-    .model-card {
-        background: #fff;
-        border: 1px solid #cbdcff;
-        border-radius: 12px;
-        padding: 12px 8px;
-        text-align: center;
-        margin-bottom: 10px;
+    [data-testid="stMetricLabel"] {
+        color: #475569 !important;
+        font-weight: 650 !important;
     }
 
-    .model-check {
-        background: #e1ecff;
-        color: #2563eb;
-        width: 36px;
-        height: 36px;
-        line-height: 36px;
-        border-radius: 50%;
-        margin: 0 auto 6px auto;
-        font-size: 21px;
-        font-weight: 800;
-    }
-
-    .model-name {
-        font-size: .91rem;
-        font-weight: 800;
-        color: #17233c;
-    }
-
-    .model-caption {
-        font-size: .72rem;
-        color: #64748b;
-        margin-top: 4px;
-    }
-
-    div[data-testid="stButton"] > button {
-        width: 100%;
-        min-height: 43px;
-        border: 0 !important;
-        border-radius: 10px !important;
-        background: linear-gradient(100deg, #5145e5, #089fcb) !important;
-        color: #fff !important;
-        font-size: .90rem !important;
+    [data-testid="stMetricValue"] {
+        color: #172554 !important;
         font-weight: 800 !important;
-        box-shadow: 0 3px 8px rgba(49,94,251,.15);
+        overflow-wrap: anywhere !important;
     }
 
-    div[data-testid="stButton"] > button p {
-        color: #fff !important;
-    }
-
-    div[data-testid="stButton"] > button:hover {
-        color: #fff !important;
-        filter: brightness(.97);
-        transform: translateY(-1px);
-    }
-
-    div[data-testid="stSelectbox"] label {
-        color: #334155 !important;
+    /* --------------------------------------------------------
+       BUTTONS
+    -------------------------------------------------------- */
+    .stButton > button,
+    .stDownloadButton > button {
+        min-height: 42px !important;
+        height: auto !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+        border-radius: 10px !important;
         font-weight: 700 !important;
+        transition: all 0.15s ease-in-out;
     }
 
-    div[data-testid="stSelectbox"] div[data-baseweb="select"] > div {
-        border-radius: 9px !important;
-        border-color: #d7e0ee !important;
-        background: #fff !important;
-        color: #17233c !important;
+    .stButton > button[kind="primary"] {
+        background: #4338ca !important;
+        color: #ffffff !important;
+        border: 1px solid #4338ca !important;
     }
 
-    /* Tabs stay in one horizontal row */
+    .stButton > button[kind="primary"]:hover {
+        background: #3730a3 !important;
+        border-color: #3730a3 !important;
+    }
+
+    .stDownloadButton > button {
+        background: #ffffff !important;
+        color: #334155 !important;
+        border: 1px solid #cbd5e1 !important;
+    }
+
+    /* --------------------------------------------------------
+       TABS — HIGH CONTRAST, NO OVERFLOW
+    -------------------------------------------------------- */
     div[data-testid="stTabs"] {
-        background: #edf2fb;
-        border: 1px solid #d8e2f2;
-        border-radius: 10px;
-        padding: 4px 5px 0 5px;
-        margin-bottom: 10px;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        background: #edf2fb !important;
+        border: 1px solid #d5deed !important;
+        border-radius: 14px !important;
+        padding: 6px !important;
+        margin-top: 12px !important;
+        overflow: visible !important;
     }
 
-    /* Tab navigation: force readable colors on Streamlit/BaseWeb elements */
     div[data-testid="stTabs"] [data-baseweb="tab-list"] {
         display: flex !important;
-        flex-wrap: nowrap !important;
-        gap: 5px !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        scrollbar-width: thin;
-        border-bottom: 1px solid #d7e0ee !important;
-    }
-
-    div[data-testid="stTabs"] [data-baseweb="tab-list"] button,
-    div[data-testid="stTabs"] [data-baseweb="tab-list"] button *,
-    div[data-testid="stTabs"] button[data-baseweb="tab"],
-    div[data-testid="stTabs"] button[data-baseweb="tab"] p,
-    div[data-testid="stTabs"] button[data-baseweb="tab"] span {
-        color: #334155 !important;
-        -webkit-text-fill-color: #334155 !important;
-        font-weight: 700 !important;
-        font-size: .86rem !important;
-        opacity: 1 !important;
-        white-space: nowrap !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        white-space: normal !important;
+        background: transparent !important;
+        border-bottom: 0 !important;
+        overflow: visible !important;
     }
 
     div[data-testid="stTabs"] button[data-baseweb="tab"] {
-        background: #e7edf7 !important;
-        border: 1px solid #d5deec !important;
-        border-bottom: 0 !important;
-        border-radius: 8px 8px 0 0 !important;
-        padding: 9px 12px !important;
-        flex: 0 0 auto !important;
-    }
-
-    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"],
-    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] * {
-        background: #ffffff !important;
-        color: #0f766e !important;
-        -webkit-text-fill-color: #0f766e !important;
-        border-bottom: 3px solid #0f766e !important;
-        font-weight: 800 !important;
-    }
-
-    /* Keep the tab content within the viewport; scroll inside the active tab */
-    div[data-testid="stTabs"] [data-baseweb="tab-panel"],
-    div[data-testid="stTabs"] [role="tabpanel"] {
-        max-height: calc(100vh - 300px) !important;
-        overflow-y: auto !important;
-        overflow-x: hidden !important;
-        padding: 10px 2px 12px 2px !important;
-        overscroll-behavior: contain;
-    }
-
-    /* Compact forecast cards and reduce excess vertical space */
-    div[data-testid="stTabs"] [data-testid="stVerticalBlock"] {
-        gap: .55rem !important;
-    }
-
-    @media (max-height: 800px) {
-        div[data-testid="stTabs"] [data-baseweb="tab-panel"],
-        div[data-testid="stTabs"] [role="tabpanel"] {
-            max-height: calc(100vh - 255px) !important;
-        }
-    }
-
-    .metric-card {
-        background: #fff;
-        border: 1px solid #d9e4f3;
-        border-radius: 10px;
-        padding: 10px 12px;
-        margin-bottom: 8px;
-    }
-
-    .metric-label {
-        font-size: .73rem;
-        font-weight: 750;
-        color: #64748b;
-        margin-bottom: 4px;
-    }
-
-    .metric-value {
-        font-size: 1.28rem;
-        font-weight: 850;
-        color: #102a43;
-        line-height: 1.2;
-    }
-
-    .metric-unit {
-        font-size: .73rem;
-        font-weight: 500;
-        color: #64748b;
-    }
-
-    .metric-note {
-        color: #64748b;
-        font-size: .68rem;
-        margin-top: 4px;
-        line-height: 1.35;
-    }
-
-    .status-good {
-        background: #e9fbf2;
-        color: #047857;
-        border: 1px solid #b8efd2;
-        padding: 8px 9px;
-        border-radius: 9px;
-        font-size: .76rem;
-        font-weight: 750;
-        margin-top: 8px;
-    }
-
-    .small-note {
-        color: #64748b;
-        font-size: .75rem;
-        line-height: 1.45;
-    }
-
-    .result-value {
-        font-size: clamp(1.8rem, 2.5vw, 2.5rem);
-        font-weight: 900;
-        line-height: 1.05;
-        margin: 3px 0;
-    }
-
-    .result-sub {
-        color: #475569;
-        font-size: .82rem;
-        margin-top: 7px;
-        margin-bottom: 8px;
-    }
-
-    .peak-sub {
-        color: #9a3412;
-        font-size: .77rem;
-        font-weight: 800;
-    }
-
-    div[data-testid="stDownloadButton"] > button {
-        width: 100% !important;
-        min-height: 40px !important;
-        border: 0 !important;
+        flex: 1 1 140px !important;
+        min-width: 0 !important;
+        min-height: 42px !important;
+        padding: 9px 14px !important;
         border-radius: 9px !important;
-        background: linear-gradient(100deg, #2563eb, #0891b2) !important;
-        color: #fff !important;
-        font-weight: 800 !important;
-        font-size: .82rem !important;
-        box-shadow: 0 3px 8px rgba(37,99,235,.15);
-    }
-
-    div[data-testid="stDownloadButton"] > button p {
-        color: #fff !important;
-    }
-
-    div[data-testid="stDownloadButton"] > button:hover {
-        background: linear-gradient(100deg, #1d4ed8, #0e7490) !important;
-        color: #fff !important;
-    }
-
-    div[data-testid="stDownloadButton"] > button:disabled {
+        border: 1px solid transparent !important;
         background: #e2e8f0 !important;
-        color: #64748b !important;
-        box-shadow: none !important;
+        color: #1e293b !important;
+        opacity: 1 !important;
+        white-space: normal !important;
+        font-size: 0.92rem !important;
+        font-weight: 750 !important;
+        line-height: 1.35 !important;
+        text-align: center !important;
     }
 
-    img, svg, canvas {
-        max-width: 100%;
+    div[data-testid="stTabs"] button[data-baseweb="tab"] *,
+    div[data-testid="stTabs"] button[data-baseweb="tab"] p,
+    div[data-testid="stTabs"] button[data-baseweb="tab"] span {
+        color: #1e293b !important;
+        opacity: 1 !important;
+        font-weight: 750 !important;
     }
 
-    /* Avoid long left-column cards making the whole page unnecessarily tall */
-    .metric-card {
-        padding: 8px 10px;
-        margin-bottom: 6px;
+    div[data-testid="stTabs"] button[data-baseweb="tab"]:hover {
+        background: #dbeafe !important;
+        border-color: #93c5fd !important;
+        color: #1e3a8a !important;
     }
 
-    .metric-value {
-        font-size: 1.15rem;
+    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] {
+        background: #ffffff !important;
+        border: 1px solid #a5b4fc !important;
+        box-shadow: 0 2px 8px rgba(67, 56, 202, 0.12) !important;
+        color: #3730a3 !important;
+        opacity: 1 !important;
     }
 
+    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] *,
+    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] p,
+    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] span {
+        color: #3730a3 !important;
+        opacity: 1 !important;
+    }
+
+    div[data-testid="stTabs"] [data-baseweb="tab-highlight"],
+    div[data-testid="stTabs"] [data-baseweb="tab-border"] {
+        display: none !important;
+    }
+
+    /* IMPORTANT: do not constrain tab panel height.
+       Let the page expand naturally with all forecast content. */
+    div[data-testid="stTabs"] [data-baseweb="tab-panel"],
+    div[data-testid="stTabContent"],
+    div[data-testid="stVerticalBlock"] {
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+    div[data-testid="stTabs"] [data-baseweb="tab-panel"] {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        padding-top: 1rem !important;
+    }
+
+    /* --------------------------------------------------------
+       DATAFRAME AND CHART
+    -------------------------------------------------------- */
+    [data-testid="stDataFrame"],
+    [data-testid="stTable"] {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    [data-testid="stPlotlyChart"],
+    [data-testid="stImage"] {
+        max-width: 100% !important;
+    }
+
+    /* --------------------------------------------------------
+       FORECAST CARDS
+    -------------------------------------------------------- */
+    .forecast-card {
+        min-width: 0;
+        width: 100%;
+        min-height: 88px;
+        box-sizing: border-box;
+        padding: 9px 5px;
+        border: 1px solid #dbe5f3;
+        border-radius: 12px;
+        background: #ffffff;
+        text-align: center;
+        overflow-wrap: anywhere;
+        box-shadow: 0 3px 10px rgba(15, 23, 42, 0.035);
+    }
+
+    .forecast-card .forecast-time {
+        color: #64748b;
+        font-size: 0.78rem;
+        font-weight: 650;
+        margin-bottom: 7px;
+    }
+
+    .forecast-card .forecast-value {
+        color: #172554;
+        font-size: clamp(0.95rem, 1.5vw, 1.25rem);
+        font-weight: 850;
+        line-height: 1.25;
+    }
+
+    .forecast-card .forecast-unit {
+        color: #64748b;
+        font-size: 0.7rem;
+        margin-top: 3px;
+    }
+
+    /* --------------------------------------------------------
+       FOOTER
+    -------------------------------------------------------- */
+    .app-footer {
+        margin-top: 26px;
+        padding: 16px 8px 4px;
+        border-top: 1px solid #dbe3ef;
+        text-align: center;
+        color: #64748b;
+        font-size: 0.82rem;
+        line-height: 1.6;
+    }
+
+    /* --------------------------------------------------------
+       RESPONSIVE LAYOUT
+    -------------------------------------------------------- */
     @media (max-width: 900px) {
-        .block-container {
-            padding-left: .6rem !important;
-            padding-right: .6rem !important;
+        .main .block-container {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
         }
-        .hero-title {
-            font-size: 1.2rem;
+
+        .hero {
+            padding: 18px;
         }
+
         div[data-testid="stTabs"] button[data-baseweb="tab"] {
-            padding: 7px 8px !important;
-            font-size: .76rem !important;
+            flex-basis: 120px !important;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .hero-title {
+            font-size: 1.55rem;
+        }
+
+        div[data-testid="stTabs"] button[data-baseweb="tab"] {
+            flex-basis: 100% !important;
         }
     }
     </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-st.markdown(
-    """
-    <div class="hero">
-        <div class="hero-title">Hanoi Air Intelligence</div>
-        <div class="hero-subtitle">
-            SOFTS · PM2.5 Forecasting · Next 24 Hours · Hanoi, Vietnam (UTC+7)
-        </div>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-
-
-# ============================================================
-# 5. LOAD SCALER AND TEST WINDOWS
-# ============================================================
-
-@st.cache_data(show_spinner=False)
-def load_scaler():
-    if not SCALER_FILE.exists():
-        raise FileNotFoundError(f"Missing file: {SCALER_FILE}")
-
-    df = pd.read_csv(SCALER_FILE)
-    df.columns = [str(c).strip().lower() for c in df.columns]
-
-    feature_col = next(
-        (c for c in ["feature", "column", "variable", "name"] if c in df.columns),
-        None,
-    )
-    mean_col = next(
-        (c for c in ["mean", "mu"] if c in df.columns),
-        None,
-    )
-    scale_col = next(
-        (c for c in ["scale", "std", "standard_deviation"] if c in df.columns),
-        None,
-    )
-
-    if not feature_col or not mean_col or not scale_col:
-        raise ValueError("scaler_stats.csv must contain feature, mean and scale/std.")
-
-    df[feature_col] = df[feature_col].astype(str).str.strip().str.lower()
-    df[mean_col] = pd.to_numeric(df[mean_col], errors="coerce")
-    df[scale_col] = pd.to_numeric(df[scale_col], errors="coerce")
-    df = df.dropna(subset=[feature_col, mean_col, scale_col])
-
-    stats = {}
-    for _, row in df.iterrows():
-        name = row[feature_col]
-        mean = float(row[mean_col])
-        scale = float(row[scale_col])
-
-        if not np.isfinite(mean):
-            continue
-        if not np.isfinite(scale) or scale <= 0:
-            scale = 1.0
-
-        stats[name] = {"mean": mean, "std": scale}
-
-    missing = [f for f in FEATURE_COLUMNS if f not in stats]
-    if missing:
-        raise ValueError("Missing scaler values for: " + ", ".join(missing))
-
-    return stats
-
-
-@st.cache_data(show_spinner=False)
-def load_test_data():
-    if not WINDOW_FILE.exists():
-        raise FileNotFoundError(f"Missing file: {WINDOW_FILE}")
-
-    with np.load(WINDOW_FILE, allow_pickle=False) as data:
-        if "X_test" not in data:
-            raise KeyError("NPZ file does not contain X_test.")
-
-        X_test = np.asarray(data["X_test"], dtype=np.float32)
-        Y_test = (
-            np.asarray(data["Y_test"], dtype=np.float32)
-            if "Y_test" in data else None
-        )
-
-    if X_test.ndim != 3 or X_test.shape[1:] != (96, 7):
-        raise ValueError(f"X_test must have shape (N, 96, 7); got {X_test.shape}")
-    if len(X_test) == 0:
-        raise ValueError("X_test contains no samples.")
-    if not np.isfinite(X_test).all():
-        raise ValueError("X_test contains NaN or infinite values.")
-
-    return X_test, Y_test
-
-
-# ============================================================
-# 6. LOAD SOFTS MODEL
-# ============================================================
-
-@st.cache_resource(show_spinner="Loading SOFTS checkpoint...")
-def load_model():
-    if not MODEL_FILE.exists():
-        raise FileNotFoundError(f"Missing checkpoint: {MODEL_FILE}")
-
-    from models.SOFTS import Model
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = Model(MODEL_CONFIG).to(device)
-
-    try:
-        checkpoint = torch.load(
-            MODEL_FILE,
-            map_location=device,
-            weights_only=False,
-        )
-    except TypeError:
-        checkpoint = torch.load(MODEL_FILE, map_location=device)
-
-    if isinstance(checkpoint, dict):
-        if "model" in checkpoint:
-            state_dict = checkpoint["model"]
-        elif "state_dict" in checkpoint:
-            state_dict = checkpoint["state_dict"]
-        elif "model_state_dict" in checkpoint:
-            state_dict = checkpoint["model_state_dict"]
-        else:
-            state_dict = checkpoint
-    else:
-        state_dict = checkpoint
-
-    cleaned = {}
-    for key, value in state_dict.items():
-        new_key = key[7:] if key.startswith("module.") else key
-        cleaned[new_key] = value
-
-    model.load_state_dict(cleaned, strict=True)
-    model.eval()
-    return model, device
-
-
-def inverse_pm25(values, scaler_stats):
-    values = np.asarray(values, dtype=np.float32)
-    return (
-        values * scaler_stats[TARGET_COLUMN]["std"]
-        + scaler_stats[TARGET_COLUMN]["mean"]
-    )
-
-
-# ============================================================
-# 7. FORECAST FUNCTION
-# ============================================================
-
-def run_forecast(model, device, X_test, scaler_stats, sample_index):
-    x_input = X_test[sample_index:sample_index + 1]
-    x_tensor = torch.as_tensor(x_input, dtype=torch.float32, device=device)
-
-    decoder = torch.zeros(
-        (
-            1,
-            MODEL_CONFIG.label_len + MODEL_CONFIG.pred_len,
-            MODEL_CONFIG.dec_in,
-        ),
-        dtype=torch.float32,
-        device=device,
-    )
-
-    pm25_index = FEATURE_COLUMNS.index("pm25")
-    decoder[:, :MODEL_CONFIG.label_len, 0] = (
-        x_tensor[:, -MODEL_CONFIG.label_len:, pm25_index]
-    )
-
-    with torch.inference_mode():
-        output = model(x_tensor, None, decoder, None)
-
-    if isinstance(output, (tuple, list)):
-        output = output[0]
-    if isinstance(output, dict):
-        output = output.get("prediction", output.get("output"))
-
-    if output is None or output.ndim != 3:
-        raise ValueError("Model output must have shape (B, T, C).")
-    if output.shape[1] < FORECAST_HOURS:
-        raise ValueError("Model did not return 24 forecast steps.")
-
-    if output.shape[2] == 1:
-        scaled = output[0, -FORECAST_HOURS:, 0]
-    elif output.shape[2] == NUM_FEATURES:
-        scaled = output[0, -FORECAST_HOURS:, pm25_index]
-    else:
-        raise ValueError(f"Unexpected output channel count: {output.shape[2]}")
-
-    forecast = inverse_pm25(scaled.detach().cpu().numpy(), scaler_stats)
-    forecast = np.maximum(forecast, 0.0)
-
-    if len(forecast) != FORECAST_HOURS or not np.isfinite(forecast).all():
-        raise ValueError("Forecast contains invalid values or an incorrect length.")
-
-    return forecast
-
-
-# ============================================================
-# 8. LOAD RESOURCES
-# ============================================================
-
-try:
-    with st.spinner("Loading data and model..."):
-        scaler_stats = load_scaler()
-        X_test, Y_test = load_test_data()
-        model, device = load_model()
-except Exception as exc:
-    st.error(f"{T['init_error']} {exc}")
-    st.info(T["check_paths"])
-    st.stop()
-
-
-# ============================================================
-# 9. SESSION STATE
-# Results change only when Run Forecast is pressed.
-# ============================================================
-
-if "forecast_result" not in st.session_state:
-    st.session_state.forecast_result = None
-if "forecast_error" not in st.session_state:
-    st.session_state.forecast_error = None
-if "forecast_area" not in st.session_state:
-    st.session_state.forecast_area = AREAS[0]
-if "sample_index" not in st.session_state:
-    st.session_state.sample_index = 0
-if "generated_at" not in st.session_state:
-    st.session_state.generated_at = None
-
-
-# ============================================================
-# 10. MAIN LAYOUT
-# ============================================================
-
-left_col, right_col = st.columns([0.245, 0.755], gap="medium")
-
-with left_col:
-    st.markdown(
-        f'<div class="section-title">{T["settings"]}</div>',
-        unsafe_allow_html=True,
-    )
-
-    st.markdown(
-        f"""
-        <div class="model-card">
-            <div class="model-check">✓</div>
-            <div class="model-name">{html.escape(T["model"])}</div>
-            <div class="model-caption">{html.escape(T["model_caption"])}</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    selected_area = st.selectbox(
-        T["area"],
-        AREAS,
-        index=AREAS.index(st.session_state.forecast_area),
-        key="area_selector",
-    )
-
-    st.markdown(
-        f"""
-        <div class="small-note">
-            {html.escape(T["horizon"])}<br>
-            {html.escape(T["history"])}<br>
-            {html.escape(T["timezone"])}
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    st.write("")
-
-    run_button = st.button(
-        T["run"],
-        type="primary",
-        use_container_width=True,
-        key="run_forecast_button",
-    )
-
-    if run_button:
-        try:
-            with st.spinner(T["loading"]):
-                if len(X_test) > 1:
-                    choices = list(range(len(X_test)))
-                    previous_index = min(
-                        int(st.session_state.sample_index),
-                        len(X_test) - 1,
-                    )
-                    if previous_index in choices:
-                        choices.remove(previous_index)
-                    sample_index = random.choice(choices)
-                else:
-                    sample_index = 0
-
-                forecast_values = run_forecast(
-                    model=model,
-                    device=device,
-                    X_test=X_test,
-                    scaler_stats=scaler_stats,
-                    sample_index=sample_index,
-                )
-
-                st.session_state.sample_index = sample_index
-                st.session_state.forecast_result = forecast_values
-                st.session_state.forecast_area = selected_area
-                st.session_state.generated_at = datetime.now(TIMEZONE)
-                st.session_state.forecast_error = None
-
-        except Exception as exc:
-            st.session_state.forecast_error = str(exc)
-
-    if st.session_state.forecast_error:
-        st.error(f"{T['error']}: {st.session_state.forecast_error}")
-
-    st.markdown(f"### {T['performance']}")
-
-    result = st.session_state.forecast_result
-    display_sample_index = min(
-        int(st.session_state.sample_index),
-        len(X_test) - 1,
-    )
-
-    if result is None:
-        initial_history = np.maximum(
-            inverse_pm25(X_test[display_sample_index, :, 0], scaler_stats),
-            0.0,
-        )
-        display_forecast = np.full(
-            FORECAST_HOURS,
-            float(np.mean(initial_history[-24:])),
-            dtype=np.float32,
-        )
-    else:
-        display_forecast = np.asarray(result, dtype=np.float32)
-
-    mae_value = None
-    mse_value = None
-
-    if Y_test is not None:
-        try:
-            y_true = np.asarray(Y_test[display_sample_index]).squeeze()
-
-            if y_true.ndim > 1:
-                y_true = y_true[:, 0]
-
-            if len(y_true) >= FORECAST_HOURS:
-                y_true = inverse_pm25(
-                    y_true[-FORECAST_HOURS:],
-                    scaler_stats,
-                )
-
-                if np.isfinite(y_true).all():
-                    mae_value = float(
-                        np.mean(np.abs(display_forecast - y_true))
-                    )
-                    mse_value = float(
-                        np.mean((display_forecast - y_true) ** 2)
-                    )
-        except Exception:
-            mae_value = None
-            mse_value = None
-
-    mae_text = f"{mae_value:.2f}" if mae_value is not None else T["no_ground_truth"]
-    mse_text = f"{mse_value:.2f}" if mse_value is not None else T["no_ground_truth"]
-
-    # This is a display indicator, not model accuracy.
-    predict_rate = float(
-        np.clip(
-            83.2 if result is None else
-            83.2 + ((int(st.session_state.sample_index) % 6) - 2.5) * 0.4,
-            80.0,
-            85.0,
-        )
-    )
-
-    st.markdown(
-        f"""
-        <div class="metric-card">
-            <div class="metric-label">MAE</div>
-            <div class="metric-value">{mae_text}
-                <span class="metric-unit">µg/m³</span>
-            </div>
-            <div class="metric-note">{html.escape(T["mae_note"])}</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-label">MSE</div>
-            <div class="metric-value">{mse_text}
-                <span class="metric-unit">(µg/m³)²</span>
-            </div>
-            <div class="metric-note">{html.escape(T["mse_note"])}</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-label">Predict Rate</div>
-            <div class="metric-value">{predict_rate:.1f}
-                <span class="metric-unit">%</span>
-            </div>
-            <div class="metric-note">{html.escape(T["rate_note"])}</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    st.markdown(
-        f'<div class="status-good">{html.escape(T["files"])}</div>',
-        unsafe_allow_html=True,
-    )
-
-    now = (
-        st.session_state.generated_at
-        if st.session_state.generated_at is not None
-        else datetime.now(TIMEZONE)
-    )
-
-    first_time = now.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)
-    forecast_times = [
-        first_time + timedelta(hours=i)
-        for i in range(FORECAST_HOURS)
-    ]
-
-    report = pd.DataFrame({
-        T["date_col"]: [t.strftime("%d/%m/%Y") for t in forecast_times],
-        T["time_col"]: [t.strftime("%H:%M") for t in forecast_times],
-        T["predicted"]: np.round(display_forecast, 2),
-    })
-
-    st.download_button(
-        T["download_csv"],
-        data=report.to_csv(index=False).encode("utf-8-sig"),
-        file_name="hanoi_pm25_forecast_24h.csv",
-        mime="text/csv",
-        use_container_width=True,
-        key="download_forecast_csv",
-    )
-
-
-# ============================================================
-# 11. PREPARE CHART DATA
-# ============================================================
-
-current_sample_index = min(
-    int(st.session_state.sample_index),
-    len(X_test) - 1,
-)
-
-history = np.maximum(
-    inverse_pm25(X_test[current_sample_index, :, 0], scaler_stats),
-    0.0,
-)
-forecast = np.asarray(display_forecast, dtype=np.float32)
-
-now_for_chart = (
-    st.session_state.generated_at
-    if st.session_state.generated_at is not None
-    else datetime.now(TIMEZONE)
-)
-
-history_end = now_for_chart.replace(minute=0, second=0, microsecond=0)
-history_start = history_end - timedelta(hours=INPUT_HOURS - 1)
-
-history_times = [
-    history_start + timedelta(hours=i)
-    for i in range(INPUT_HOURS)
-]
-
-forecast_start = history_end + timedelta(hours=1)
-forecast_times = [
-    forecast_start + timedelta(hours=i)
-    for i in range(FORECAST_HOURS)
-]
-
-average_value = float(np.mean(forecast))
-peak_value = float(np.max(forecast))
-peak_index = int(np.argmax(forecast))
-peak_time = forecast_times[peak_index]
-hours_above = int(np.sum(forecast > REFERENCE_LEVEL))
-
-
-# ============================================================
-# 12. RESULT TABS: CHART / 24-HOUR FORECAST / TABLE
-# Each tab uses the same display area; only the selected tab appears.
-# ============================================================
-
-with right_col:
-    tab_chart, tab_forecast, tab_table = st.tabs([
-        T["chart"],
-        T["forecast"],
-        T["table"],
-    ])
-
-    # --------------------------------------------------------
-    # TAB 1: FORECAST CHART
-    # --------------------------------------------------------
-    with tab_chart:
-        value_color = "#b42318" if peak_value > REFERENCE_LEVEL else "#047857"
-
-        st.markdown(
-            f"""
-            <div style="display:flex;align-items:flex-end;gap:14px;margin:5px 0 3px 0">
-                <div class="result-value" style="color:{value_color}">
-                    {peak_value:.1f}
-                </div>
-                <div style="padding-bottom:5px">
-                    <div style="color:#64748b;font-size:.78rem">µg/m³</div>
-                    <div class="peak-sub">{html.escape(T["peak"])} {peak_time.strftime("%H:%M")}</div>
-                </div>
-            </div>
-            <div class="result-sub">
-                {html.escape(T["average"])}: <b>{average_value:.1f} µg/m³</b>.
-                {html.escape(T["above"])} <b>{hours_above} {html.escape(T["hours"])}</b>.
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-        fig, ax = plt.subplots(figsize=(12.5, 4.7))
-
-        ax.plot(
-            history_times,
-            history,
-            color="#3478F6",
-            linewidth=2.1,
-            label=T["history_label"],
-            zorder=3,
-        )
-
-        # Connect the final historical value to the first forecast value.
-        ax.plot(
-            [history_times[-1], forecast_times[0]],
-            [float(history[-1]), float(forecast[0])],
-            color="#F59E0B",
-            linewidth=2.3,
-            zorder=4,
-        )
-
-        ax.plot(
-            forecast_times,
-            forecast,
-            color="#F59E0B",
-            linewidth=2.4,
-            marker="o",
-            markersize=3.8,
-            label=T["forecast_label"],
-            zorder=4,
-        )
-
-        ax.scatter(
-            [peak_time],
-            [peak_value],
-            s=68,
-            color=value_color,
-            edgecolor="white",
-            linewidth=1.2,
-            zorder=5,
-        )
-
-        ax.annotate(
-            f"{peak_value:.1f} · {peak_time.strftime('%H:%M')}",
-            xy=(peak_time, peak_value),
-            xytext=(0, 11),
-            textcoords="offset points",
-            ha="center",
-            fontsize=8.5,
-            fontweight="bold",
-            color=value_color,
-        )
-
-        ax.axhline(
-            REFERENCE_LEVEL,
-            color="#64748b",
-            linewidth=1.5,
-            linestyle="--",
-            label="Reference 50 µg/m³",
-            zorder=1,
-        )
-
-        ax.axvline(
-            history_times[-1],
-            color="#64748b",
-            linewidth=1.4,
-            linestyle=":",
-            alpha=0.95,
-        )
-
-        ax.set_ylabel(T["ylabel"], fontsize=9.5)
-        ax.set_xlabel(T["xlabel"], fontsize=9)
-        ax.grid(axis="y", color="#e2e8f0", linewidth=.8)
-        ax.grid(axis="x", alpha=.12)
-        ax.set_axisbelow(True)
-
-        ax.spines["top"].set_visible(False)
-        ax.spines["right"].set_visible(False)
-        ax.spines["left"].set_color("#d7e0ee")
-        ax.spines["bottom"].set_color("#d7e0ee")
-        ax.tick_params(axis="both", labelsize=8, colors="#475569")
-
-        ax.legend(
-            loc="upper left",
-            frameon=False,
-            ncol=3,
-            fontsize=8,
-        )
-
-        locator = mdates.AutoDateLocator(minticks=6, maxticks=9)
-        ax.xaxis.set_major_locator(locator)
-        ax.xaxis.set_major_formatter(
-            mdates.DateFormatter("%H:%M\n%d/%m", tz=TIMEZONE)
-        )
-
-        ax.set_xlim(history_times[0], forecast_times[-1])
-        fig.tight_layout(pad=1.0)
-
-        st.pyplot(fig, use_container_width=True)
-
-        png_buffer = io.BytesIO()
-        fig.savefig(
-            png_buffer,
-            format="png",
-            dpi=160,
-            bbox_inches="tight",
-            facecolor="white",
-        )
-        plt.close(fig)
-
-        st.caption(
-            f"{st.session_state.forecast_area} · "
-            f"{T['generated']} "
-            f"{now_for_chart.strftime('%H:%M %d/%m/%Y')} (UTC+7)"
-        )
-
-        st.download_button(
-            T["download_png"],
-            data=png_buffer.getvalue(),
-            file_name="hanoi_pm25_forecast_chart.png",
-            mime="image/png",
-            key="download_chart_png",
-        )
-
-        explanation = (
-            T["above_text"]
-            if average_value > REFERENCE_LEVEL
-            else T["below_text"]
-        )
-
-        st.markdown(
-            f"""
-            <div style="color:#4f46e5;font-size:.79rem;font-style:italic;
-                        margin-top:8px;line-height:1.5">
-                💡 {html.escape(T["explanation"])}: {html.escape(explanation)}
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-    # --------------------------------------------------------
-    # TAB 2: 24-HOUR FORECAST CARDS
-    # --------------------------------------------------------
-    with tab_forecast:
-        st.markdown(f"#### {T['forecast_heading']}")
-        st.caption(
-            f"{st.session_state.forecast_area} · {T['forecast_caption']}"
-        )
-
-        def classify_pm25(value):
-            if value <= 12:
-                return T["good"], "#059669", "#d1fae5"
-            if value <= 35:
-                return T["moderate"], "#d97706", "#fef3c7"
-            if value <= 55:
-                return T["high"], "#ea580c", "#ffedd5"
-            return T["poor"], "#dc2626", "#fee2e2"
-
-        # Six cards per row; exactly 24 cards, each with a real clock time.
-        for row_start in range(0, FORECAST_HOURS, 6):
-            cols = st.columns(6, gap="small")
-
-            for offset, col in enumerate(cols):
-                i = row_start + offset
-                value = float(forecast[i])
-                label, color, bg = classify_pm25(value)
-                time_label = forecast_times[i].strftime("%H:%M")
-                date_label = forecast_times[i].strftime("%d/%m")
-
-                with col:
-                    st.markdown(
-                        f"""
-                        <div style="
-                            background:#ffffff;
-                            border:1px solid #dbe4f0;
-                            border-top:4px solid {color};
-                            border-radius:10px;
-                            min-height:96px;
-                            padding:7px 3px 6px 3px;
-                            text-align:center;
-                            margin-bottom:7px;
-                        ">
-                            <div style="font-size:.71rem;color:#64748b">
-                                {time_label}
-                            </div>
-                            <div style="font-size:.65rem;color:#94a3b8;margin-top:2px">
-                                {date_label}
-                            </div>
-                            <div style="font-size:1.08rem;font-weight:850;
-                                        color:{color};margin:4px 0 3px 0">
-                                {value:.1f}
-                            </div>
-                            <div style="display:inline-block;background:{bg};
-                                        color:{color};border-radius:999px;
-                                        font-size:.65rem;font-weight:750;padding:3px 7px">
-                                {html.escape(label)}
-                            </div>
-                            <div style="font-size:.64rem;color:#64748b;margin-top:4px">
-                                µg/m³
-                            </div>
-                        </div>
-                        """,
-                        unsafe_allow_html=True,
-                    )
-
-        st.markdown(
-            f"""
-            <div style="display:flex;flex-wrap:wrap;gap:16px;
-                        font-size:.76rem;color:#475569;margin:5px 0 12px 0">
-                <span><b style="color:#059669">●</b> {html.escape(T["good"])} (≤ 12)</span>
-                <span><b style="color:#d97706">●</b> {html.escape(T["moderate"])} (12–35)</span>
-                <span><b style="color:#ea580c">●</b> {html.escape(T["high"])} (35–55)</span>
-                <span><b style="color:#dc2626">●</b> {html.escape(T["poor"])} (> 55)</span>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-        st.download_button(
-            T["download_csv"],
-            data=report.to_csv(index=False).encode("utf-8-sig"),
-            file_name="hanoi_pm25_forecast_24h.csv",
-            mime="text/csv",
-            key="download_24h_csv",
-        )
-
-    # --------------------------------------------------------
-    # TAB 3: DATA TABLE
-    # --------------------------------------------------------
-    with tab_table:
-        st.markdown(f"#### {T['data_heading']}")
-        st.caption(T["data_caption"])
-
-        display_report = report.copy()
-        display_report.insert(
-            0,
-            T["hour_col"],
-            [
-                f"{t.strftime('%H:%M')} · {t.strftime('%d/%m/%Y')}"
-                for t in forecast_times
-            ],
-        )
-
-        st.dataframe(
-            display_report,
-            use_container_width=True,
-            hide_index=True,
-            height=480,
-        )
-
-        st.download_button(
-            T["download_csv"],
-            data=display_report.to_csv(index=False).encode("utf-8-sig"),
-            file_name="hanoi_pm25_forecast_table.csv",
-            mime="text/csv",
-            key="download_table_csv",
-        )
-
-
-# ============================================================
-# 13. FOOTER
-# ============================================================
-
-st.markdown(
-    f"""
-    <div style="
-        text-align:center;
-        color:#94a3b8;
-        font-size:.68rem;
-        padding:8px 0 0 0;
-    ">
-        {html.escape(T["footer"])}
-    </div>
     """,
     unsafe_allow_html=True,
 )
