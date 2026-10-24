@@ -72,17 +72,7 @@ The 7 input variables:
 
 *Figure: top, overall architecture (dashed box = frozen, bold box = trained, red dashed arrow = gradient flow). Bottom, the loss function and the contrastive alignment mechanism. Labels in the figure are in Vietnamese; the table below gives the English description.*
 
-### Data flow
 
-```text
-Satellite image ──► DINOv3 (ViT-S/16) ──► F_img ──► P_img ──► z ─┐
-   (frozen or partially fine-tuned)                              ├─► Fusion ─► Forecasting Head (MLP) ─► ŷ (24 h)
-Time series (96×7) ─► SOFTS temporal encoder ─► F_ts ─► P_ts ─► u ┘
-   (trainable)
-
-L_forecast(ŷ, y)  ← gradient to Head, Fusion, P_img, P_ts, SOFTS
-L_align(z, u)     ← gradient to P_img, P_ts, SOFTS  (and DINOv3 only if partially fine-tuned)
-```
 
 ### What was changed compared with baseline SOFTS
 
