@@ -428,35 +428,68 @@ st.markdown(
         margin-bottom: 10px;
     }
 
+    /* Tab navigation: force readable colors on Streamlit/BaseWeb elements */
     div[data-testid="stTabs"] [data-baseweb="tab-list"] {
-        gap: 4px;
+        display: flex !important;
         flex-wrap: nowrap !important;
+        gap: 5px !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        scrollbar-width: thin;
+        border-bottom: 1px solid #d7e0ee !important;
     }
 
-    div[data-testid="stTabs"] button[data-baseweb="tab"] {
+    div[data-testid="stTabs"] [data-baseweb="tab-list"] button,
+    div[data-testid="stTabs"] [data-baseweb="tab-list"] button *,
+    div[data-testid="stTabs"] button[data-baseweb="tab"],
+    div[data-testid="stTabs"] button[data-baseweb="tab"] p,
+    div[data-testid="stTabs"] button[data-baseweb="tab"] span {
         color: #334155 !important;
-        font-weight: 750 !important;
+        -webkit-text-fill-color: #334155 !important;
+        font-weight: 700 !important;
         font-size: .86rem !important;
-        border-radius: 8px 8px 0 0 !important;
-        padding: 8px 12px !important;
         opacity: 1 !important;
         white-space: nowrap !important;
     }
 
-    div[data-testid="stTabs"] button[data-baseweb="tab"] p {
-        color: #334155 !important;
-        font-weight: 750 !important;
-        opacity: 1 !important;
+    div[data-testid="stTabs"] button[data-baseweb="tab"] {
+        background: #e7edf7 !important;
+        border: 1px solid #d5deec !important;
+        border-bottom: 0 !important;
+        border-radius: 8px 8px 0 0 !important;
+        padding: 9px 12px !important;
+        flex: 0 0 auto !important;
     }
 
-    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] {
-        background: #fff !important;
-        color: #4338ca !important;
-        border-bottom: 3px solid #4f46e5 !important;
+    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"],
+    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] * {
+        background: #ffffff !important;
+        color: #0f766e !important;
+        -webkit-text-fill-color: #0f766e !important;
+        border-bottom: 3px solid #0f766e !important;
+        font-weight: 800 !important;
     }
 
-    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] p {
-        color: #4338ca !important;
+    /* Keep the tab content within the viewport; scroll inside the active tab */
+    div[data-testid="stTabs"] [data-baseweb="tab-panel"],
+    div[data-testid="stTabs"] [role="tabpanel"] {
+        max-height: calc(100vh - 300px) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        padding: 10px 2px 12px 2px !important;
+        overscroll-behavior: contain;
+    }
+
+    /* Compact forecast cards and reduce excess vertical space */
+    div[data-testid="stTabs"] [data-testid="stVerticalBlock"] {
+        gap: .55rem !important;
+    }
+
+    @media (max-height: 800px) {
+        div[data-testid="stTabs"] [data-baseweb="tab-panel"],
+        div[data-testid="stTabs"] [role="tabpanel"] {
+            max-height: calc(100vh - 255px) !important;
+        }
     }
 
     .metric-card {
@@ -560,6 +593,16 @@ st.markdown(
 
     img, svg, canvas {
         max-width: 100%;
+    }
+
+    /* Avoid long left-column cards making the whole page unnecessarily tall */
+    .metric-card {
+        padding: 8px 10px;
+        margin-bottom: 6px;
+    }
+
+    .metric-value {
+        font-size: 1.15rem;
     }
 
     @media (max-width: 900px) {
@@ -1269,8 +1312,8 @@ with right_col:
                             border:1px solid #dbe4f0;
                             border-top:4px solid {color};
                             border-radius:10px;
-                            min-height:108px;
-                            padding:9px 4px 8px 4px;
+                            min-height:96px;
+                            padding:7px 3px 6px 3px;
                             text-align:center;
                             margin-bottom:7px;
                         ">
@@ -1280,8 +1323,8 @@ with right_col:
                             <div style="font-size:.65rem;color:#94a3b8;margin-top:2px">
                                 {date_label}
                             </div>
-                            <div style="font-size:1.22rem;font-weight:850;
-                                        color:{color};margin:6px 0 4px 0">
+                            <div style="font-size:1.08rem;font-weight:850;
+                                        color:{color};margin:4px 0 3px 0">
                                 {value:.1f}
                             </div>
                             <div style="display:inline-block;background:{bg};
