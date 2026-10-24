@@ -443,7 +443,8 @@ st.markdown(
 
     div[data-testid="stTabs"] [data-baseweb="tab-list"] {
         display: flex !important;
-        flex-wrap: wrap !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
         gap: 6px !important;
         border-bottom: 1px solid #cbd5e1 !important;
         min-width: 0 !important;
@@ -493,14 +494,29 @@ st.markdown(
         opacity: 1 !important;
     }
 
+    /* Do not set color on every div in a tab: that overrides chart/card
+       styling and causes foreground/background collisions. Style text nodes only. */
     div[data-testid="stTabs"] [role="tabpanel"] p,
     div[data-testid="stTabs"] [role="tabpanel"] label,
-    div[data-testid="stTabs"] [role="tabpanel"] span,
     div[data-testid="stTabs"] [role="tabpanel"] h1,
     div[data-testid="stTabs"] [role="tabpanel"] h2,
-    div[data-testid="stTabs"] [role="tabpanel"] h3,
-    div[data-testid="stTabs"] [role="tabpanel"] div {
-        color: #17233c;
+    div[data-testid="stTabs"] [role="tabpanel"] h3 {
+        color: #17233c !important;
+    }
+
+    div[data-testid="stTabs"] [role="tabpanel"] [data-testid="stMarkdownContainer"] p,
+    div[data-testid="stTabs"] [role="tabpanel"] [data-testid="stCaptionContainer"] {
+        color: #334155 !important;
+    }
+
+    div[data-testid="stTabs"] [role="tabpanel"] {
+        box-sizing: border-box !important;
+        min-width: 0 !important;
+    }
+
+    div[data-testid="stTabs"] [data-testid="stHorizontalBlock"] {
+        flex-wrap: wrap !important;
+        min-width: 0 !important;
     }
 
     div[data-testid="stTabs"] [data-testid="stVerticalBlock"] {
@@ -509,7 +525,8 @@ st.markdown(
     }
 
     .metric-card {
-        background: #fff;
+        background: #ffffff !important;
+        color: #17233c !important;
         border: 1px solid #d9e4f3;
         border-radius: 10px;
         padding: 10px 12px;
@@ -517,6 +534,7 @@ st.markdown(
     }
 
     .metric-label {
+        color: #475569 !important;
         font-size: .73rem;
         font-weight: 750;
         color: #64748b;
@@ -524,6 +542,7 @@ st.markdown(
     }
 
     .metric-value {
+        color: #102a43 !important;
         font-size: 1.28rem;
         font-weight: 850;
         color: #102a43;
@@ -537,7 +556,7 @@ st.markdown(
     }
 
     .metric-note {
-        color: #64748b;
+        color: #475569 !important;
         font-size: .68rem;
         margin-top: 4px;
         line-height: 1.35;
@@ -1161,7 +1180,7 @@ with right_col:
             unsafe_allow_html=True,
         )
 
-        fig, ax = plt.subplots(figsize=(9.0, 2.25))
+        fig, ax = plt.subplots(figsize=(8.5, 1.8))
 
         ax.plot(
             history_times,
