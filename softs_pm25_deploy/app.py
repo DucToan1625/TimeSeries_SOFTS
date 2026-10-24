@@ -292,14 +292,16 @@ st.markdown(
 
     /* Keep Streamlit chrome above the app content without covering the hero */
     [data-testid="stHeader"] {
-        background: rgba(244,247,252,.98) !important;
+        background: #f4f7fc !important;
         z-index: 1000 !important;
+        height: 2.25rem !important;
     }
 
     [data-testid="stToolbar"] {
-        right: 0.5rem !important;
-        top: 0.25rem !important;
-        z-index: 1001 !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        min-height: 0 !important;
+        pointer-events: none !important;
     }
 
     [data-testid="stAppViewBlockContainer"],
@@ -307,7 +309,8 @@ st.markdown(
     .block-container {
         max-width: 100% !important;
         width: 100% !important;
-        padding: 0.45rem 1rem 0.6rem 1rem !important;
+        padding: 0.35rem 0.8rem 0.45rem 0.8rem !important;
+        overflow: visible !important;
     }
 
     /* Hide Deploy button across Streamlit Cloud versions */
@@ -428,12 +431,15 @@ st.markdown(
 
     /* Tabs: high contrast in inactive and active states */
     div[data-testid="stTabs"] {
-        background: #edf2fb;
-        border: 1px solid #d8e2f2;
+        background: #ffffff !important;
+        color: #17233c !important;
+        border: 1px solid #cbd5e1 !important;
         border-radius: 10px;
-        padding: 5px 6px 0 6px;
-        margin-bottom: 12px;
+        padding: 6px !important;
+        margin-bottom: 8px;
         min-width: 0 !important;
+        width: 100% !important;
+        overflow: visible !important;
     }
 
     div[data-testid="stTabs"] [data-baseweb="tab-list"] {
@@ -477,11 +483,29 @@ st.markdown(
 
     /* Do not cap tab height: let the page flow naturally to avoid clipped content */
     div[data-testid="stTabs"] [data-baseweb="tab-panel"],
-    div[data-testid="stTabs"] [role="tabpanel"] {
+    div[data-testid="stTabs"] [role="tabpanel"],
+    div[data-testid="stTabs"] [data-testid="stTabContent"] {
+        display: block !important;
+        visibility: visible !important;
+        color: #17233c !important;
+        background: #ffffff !important;
         max-height: none !important;
         height: auto !important;
+        min-height: 0 !important;
         overflow: visible !important;
-        padding: 10px 2px 12px 2px !important;
+        padding: 10px 4px 12px 4px !important;
+        opacity: 1 !important;
+    }
+
+    div[data-testid="stTabs"] [role="tabpanel"] * {
+        max-width: 100%;
+    }
+
+    div[data-testid="stTabs"] [data-baseweb="tab-list"] button[aria-selected="false"] {
+        background: #e2e8f0 !important;
+        color: #1e293b !important;
+        -webkit-text-fill-color: #1e293b !important;
+        border-bottom: 2px solid #94a3b8 !important;
     }
 
     div[data-testid="stTabs"] [data-testid="stVerticalBlock"] {
@@ -1133,7 +1157,7 @@ with right_col:
             unsafe_allow_html=True,
         )
 
-        fig, ax = plt.subplots(figsize=(12.5, 3.8))
+        fig, ax = plt.subplots(figsize=(10.5, 2.9))
 
         ax.plot(
             history_times,
@@ -1379,7 +1403,7 @@ with right_col:
             display_report,
             use_container_width=True,
             hide_index=True,
-            height=480,
+            height=360,
         )
 
         st.download_button(
