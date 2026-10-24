@@ -429,7 +429,7 @@ st.markdown(
         color: #17233c !important;
     }
 
-    /* Tabs: high contrast in inactive and active states */
+    /* Tabs: preserve Streamlit's native panel visibility; force readable contrast. */
     div[data-testid="stTabs"] {
         background: #ffffff !important;
         color: #17233c !important;
@@ -439,54 +439,50 @@ st.markdown(
         margin-bottom: 8px;
         min-width: 0 !important;
         width: 100% !important;
-        overflow: visible !important;
     }
 
     div[data-testid="stTabs"] [data-baseweb="tab-list"] {
         display: flex !important;
         flex-wrap: wrap !important;
-        gap: 5px !important;
-        overflow: visible !important;
+        gap: 6px !important;
         border-bottom: 1px solid #cbd5e1 !important;
         min-width: 0 !important;
     }
 
-    div[data-testid="stTabs"] button[data-baseweb="tab"],
-    div[data-testid="stTabs"] button[data-baseweb="tab"] *,
-    div[data-testid="stTabs"] button[data-baseweb="tab"] p,
-    div[data-testid="stTabs"] button[data-baseweb="tab"] span {
-        color: #1e293b !important;
-        -webkit-text-fill-color: #1e293b !important;
-        opacity: 1 !important;
-        font-weight: 750 !important;
-        font-size: .88rem !important;
-        white-space: normal !important;
-    }
-
     div[data-testid="stTabs"] button[data-baseweb="tab"] {
         background: #e2e8f0 !important;
-        border: 1px solid #cbd5e1 !important;
+        color: #172033 !important;
+        border: 1px solid #94a3b8 !important;
         border-radius: 8px 8px 0 0 !important;
         padding: 8px 12px !important;
-        flex: 0 1 auto !important;
         min-width: 0 !important;
+        opacity: 1 !important;
     }
 
-    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"],
-    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] * {
-        background: #ffffff !important;
-        color: #075985 !important;
-        -webkit-text-fill-color: #075985 !important;
-        font-weight: 850 !important;
-        border-bottom: 3px solid #0f766e !important;
+    div[data-testid="stTabs"] button[data-baseweb="tab"] * {
+        color: #172033 !important;
+        -webkit-text-fill-color: #172033 !important;
+        opacity: 1 !important;
+        font-weight: 800 !important;
+        font-size: .9rem !important;
+        text-shadow: none !important;
     }
 
-    /* Do not cap tab height: let the page flow naturally to avoid clipped content */
-    div[data-testid="stTabs"] [data-baseweb="tab-panel"],
-    div[data-testid="stTabs"] [role="tabpanel"],
-    div[data-testid="stTabs"] [data-testid="stTabContent"] {
-        display: block !important;
-        visibility: visible !important;
+    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] {
+        background: #075985 !important;
+        border-color: #075985 !important;
+        box-shadow: inset 0 -3px 0 #fbbf24 !important;
+    }
+
+    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] *,
+    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] p,
+    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] span {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
+
+    /* Never override display/visibility of inactive tab panels: Streamlit controls them. */
+    div[data-testid="stTabs"] [role="tabpanel"] {
         color: #17233c !important;
         background: #ffffff !important;
         max-height: none !important;
@@ -497,19 +493,18 @@ st.markdown(
         opacity: 1 !important;
     }
 
-    div[data-testid="stTabs"] [role="tabpanel"] * {
-        max-width: 100%;
-    }
-
-    div[data-testid="stTabs"] [data-baseweb="tab-list"] button[aria-selected="false"] {
-        background: #e2e8f0 !important;
-        color: #1e293b !important;
-        -webkit-text-fill-color: #1e293b !important;
-        border-bottom: 2px solid #94a3b8 !important;
+    div[data-testid="stTabs"] [role="tabpanel"] p,
+    div[data-testid="stTabs"] [role="tabpanel"] label,
+    div[data-testid="stTabs"] [role="tabpanel"] span,
+    div[data-testid="stTabs"] [role="tabpanel"] h1,
+    div[data-testid="stTabs"] [role="tabpanel"] h2,
+    div[data-testid="stTabs"] [role="tabpanel"] h3,
+    div[data-testid="stTabs"] [role="tabpanel"] div {
+        color: #17233c;
     }
 
     div[data-testid="stTabs"] [data-testid="stVerticalBlock"] {
-        gap: .55rem !important;
+        gap: .45rem !important;
         min-width: 0 !important;
     }
 
@@ -625,6 +620,15 @@ st.markdown(
     .metric-value {
         font-size: 1.15rem;
     }
+
+    /* Compact the dashboard so headline metrics and controls need less scrolling. */
+    .metric-card { padding: 6px 8px !important; margin-bottom: 5px !important; }
+    .metric-value { font-size: 1.05rem !important; line-height: 1.1 !important; }
+    .metric-note { font-size: .64rem !important; margin-top: 2px !important; }
+    .model-card { padding: 7px 6px !important; margin-bottom: 6px !important; }
+    .model-check { width: 28px !important; height: 28px !important; line-height: 28px !important; font-size: 17px !important; }
+    .hero { padding: 9px 16px !important; margin-bottom: 8px !important; }
+    div[data-testid="stSelectbox"], div[data-testid="stSlider"], div[data-testid="stRadio"] { margin-bottom: .35rem !important; }
 
     @media (max-width: 900px) {
         .block-container {
@@ -1157,7 +1161,7 @@ with right_col:
             unsafe_allow_html=True,
         )
 
-        fig, ax = plt.subplots(figsize=(10.5, 2.9))
+        fig, ax = plt.subplots(figsize=(9.0, 2.25))
 
         ax.plot(
             history_times,
