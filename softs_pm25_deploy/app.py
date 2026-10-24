@@ -429,67 +429,86 @@ st.markdown(
         color: #17233c !important;
     }
 
-    /* Tabs: high-contrast colors; target BaseWeb internals as well as button text. */
+    /* ==========================================================
+       TABS - high-contrast, works on dark or light system theme.
+       Targets every tab element Streamlit has used across versions
+       (role="tab", data-testid="stTab", data-baseweb="tab").
+       ========================================================== */
     div[data-testid="stTabs"] {
-        background: #f8fafc !important;
-        color: #111827 !important;
+        background: #f1f5f9 !important;
+        color: #17233c !important;
         border: 1px solid #cbd5e1 !important;
-        border-radius: 10px !important;
-        padding: 5px !important;
-        margin-bottom: 6px !important;
+        border-radius: 10px;
+        padding: 4px !important;
+        margin-bottom: 6px;
         min-width: 0 !important;
         width: 100% !important;
     }
 
+    div[data-testid="stTabs"] [role="tablist"],
     div[data-testid="stTabs"] [data-baseweb="tab-list"] {
         display: flex !important;
         flex-wrap: nowrap !important;
         overflow-x: auto !important;
-        gap: 5px !important;
-        padding: 5px !important;
+        gap: 4px !important;
+        padding: 3px 4px !important;
         background: #dbeafe !important;
-        border: 1px solid #93c5fd !important;
+        border: 1px solid #bfdbfe !important;
         border-radius: 8px !important;
         min-width: 0 !important;
     }
 
-    div[data-testid="stTabs"] [data-baseweb="tab-list"] button,
-    div[data-testid="stTabs"] button[data-baseweb="tab"] {
-        background: #ffffff !important;
-        color: #111827 !important;
-        -webkit-text-fill-color: #111827 !important;
-        border: 2px solid #64748b !important;
+    /* Inactive tab: pale background, near-black text */
+    div[data-testid="stTabs"] [role="tab"],
+    div[data-testid="stTabs"] [data-testid="stTab"],
+    div[data-testid="stTabs"] [data-baseweb="tab"] {
+        background: #eaf0f8 !important;
+        border: 1px solid #a8b8cc !important;
         border-radius: 7px !important;
-        padding: 7px 11px !important;
+        padding: 6px 10px !important;
         min-width: 0 !important;
         opacity: 1 !important;
-        font-weight: 800 !important;
-        text-shadow: none !important;
     }
 
-    div[data-testid="stTabs"] button[data-baseweb="tab"] *,
-    div[data-testid="stTabs"] button[data-baseweb="tab"] p,
-    div[data-testid="stTabs"] button[data-baseweb="tab"] span,
-    div[data-testid="stTabs"] button[data-baseweb="tab"] div {
+    div[data-testid="stTabs"] [role="tab"],
+    div[data-testid="stTabs"] [role="tab"] *,
+    div[data-testid="stTabs"] [data-testid="stTab"],
+    div[data-testid="stTabs"] [data-testid="stTab"] *,
+    div[data-testid="stTabs"] [data-baseweb="tab"],
+    div[data-testid="stTabs"] [data-baseweb="tab"] * {
         color: #111827 !important;
         -webkit-text-fill-color: #111827 !important;
         opacity: 1 !important;
         font-weight: 800 !important;
+        font-size: .9rem !important;
         text-shadow: none !important;
+        filter: none !important;
     }
 
-    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"],
-    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] * {
-        background: #1e3a8a !important;
+    /* Active tab: dark blue background, white text */
+    div[data-testid="stTabs"] [role="tab"][aria-selected="true"],
+    div[data-testid="stTabs"] [data-testid="stTab"][aria-selected="true"],
+    div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] {
+        background: #1d4ed8 !important;
+        border-color: #1d4ed8 !important;
+        box-shadow: inset 0 -3px 0 #fbbf24 !important;
+    }
+
+    div[data-testid="stTabs"] [role="tab"][aria-selected="true"],
+    div[data-testid="stTabs"] [role="tab"][aria-selected="true"] *,
+    div[data-testid="stTabs"] [data-testid="stTab"][aria-selected="true"],
+    div[data-testid="stTabs"] [data-testid="stTab"][aria-selected="true"] *,
+    div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"],
+    div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] * {
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
-        border-color: #1e3a8a !important;
         opacity: 1 !important;
     }
 
-    div[data-testid="stTabs"] button[data-baseweb="tab"]:focus-visible {
-        outline: 3px solid #f59e0b !important;
-        outline-offset: 2px !important;
+    /* Hide Streamlit's default sliding highlight line under tabs */
+    div[data-testid="stTabs"] [data-baseweb="tab-highlight"],
+    div[data-testid="stTabs"] [data-baseweb="tab-border"] {
+        display: none !important;
     }
 
     /* Never override display/visibility of inactive tab panels: Streamlit controls them. */
@@ -510,7 +529,8 @@ st.markdown(
     div[data-testid="stTabs"] [role="tabpanel"] label,
     div[data-testid="stTabs"] [role="tabpanel"] h1,
     div[data-testid="stTabs"] [role="tabpanel"] h2,
-    div[data-testid="stTabs"] [role="tabpanel"] h3 {
+    div[data-testid="stTabs"] [role="tabpanel"] h3,
+    div[data-testid="stTabs"] [role="tabpanel"] h4 {
         color: #17233c !important;
     }
 
@@ -547,7 +567,6 @@ st.markdown(
         color: #475569 !important;
         font-size: .73rem;
         font-weight: 750;
-        color: #64748b;
         margin-bottom: 4px;
     }
 
@@ -555,7 +574,6 @@ st.markdown(
         color: #102a43 !important;
         font-size: 1.28rem;
         font-weight: 850;
-        color: #102a43;
         line-height: 1.2;
     }
 
@@ -640,16 +658,6 @@ st.markdown(
         max-width: 100%;
     }
 
-    /* Avoid long left-column cards making the whole page unnecessarily tall */
-    .metric-card {
-        padding: 8px 10px;
-        margin-bottom: 6px;
-    }
-
-    .metric-value {
-        font-size: 1.15rem;
-    }
-
     /* Compact the dashboard so headline metrics and controls need less scrolling. */
     .metric-card { padding: 6px 8px !important; margin-bottom: 5px !important; }
     .metric-value { font-size: 1.05rem !important; line-height: 1.1 !important; }
@@ -668,8 +676,14 @@ st.markdown(
         .hero-title {
             font-size: 1.2rem;
         }
-        div[data-testid="stTabs"] button[data-baseweb="tab"] {
+        div[data-testid="stTabs"] [role="tab"],
+        div[data-testid="stTabs"] [data-testid="stTab"],
+        div[data-testid="stTabs"] [data-baseweb="tab"] {
             padding: 7px 8px !important;
+        }
+        div[data-testid="stTabs"] [role="tab"] *,
+        div[data-testid="stTabs"] [data-testid="stTab"] *,
+        div[data-testid="stTabs"] [data-baseweb="tab"] * {
             font-size: .76rem !important;
         }
     }
