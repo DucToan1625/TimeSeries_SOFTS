@@ -463,9 +463,13 @@ st.markdown(
         opacity: 1 !important;
     }
 
-    div[data-testid="stTabs"] button[data-baseweb="tab"] * {
-        color: #172033 !important;
-        -webkit-text-fill-color: #172033 !important;
+    /* Tab labels: use near-black text on pale tabs for strong contrast. */
+    div[data-testid="stTabs"] button[data-baseweb="tab"],
+    div[data-testid="stTabs"] button[data-baseweb="tab"] *,
+    div[data-testid="stTabs"] button[data-baseweb="tab"] p,
+    div[data-testid="stTabs"] button[data-baseweb="tab"] span {
+        color: #111827 !important;
+        -webkit-text-fill-color: #111827 !important;
         opacity: 1 !important;
         font-weight: 800 !important;
         font-size: .9rem !important;
@@ -478,11 +482,13 @@ st.markdown(
         box-shadow: inset 0 -3px 0 #fbbf24 !important;
     }
 
+    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"],
     div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] *,
     div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] p,
     div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] span {
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
+        opacity: 1 !important;
     }
 
     /* Never override display/visibility of inactive tab panels: Streamlit controls them. */
