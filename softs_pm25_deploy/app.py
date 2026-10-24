@@ -309,7 +309,7 @@ st.markdown(
     .block-container {
         max-width: 100% !important;
         width: 100% !important;
-        padding: 0.35rem 0.8rem 0.45rem 0.8rem !important;
+        padding: 2.2rem 0.8rem 0.45rem 0.8rem !important;
         overflow: visible !important;
     }
 
@@ -336,14 +336,14 @@ st.markdown(
     .hero {
         background: linear-gradient(105deg, #164e70, #10899b);
         color: white;
-        padding: 12px 20px;
+        padding: 6px 16px;
         border-radius: 13px;
-        margin: 0 0 12px 0;
+        margin: 0 0 6px 0;
         box-shadow: 0 3px 10px rgba(15,68,105,.08);
     }
 
     .hero-title {
-        font-size: 1.42rem;
+        font-size: 1.15rem;
         font-weight: 800;
         line-height: 1.25;
         color: #fff;
@@ -351,35 +351,35 @@ st.markdown(
 
     .hero-subtitle {
         color: #e7f8ff;
-        font-size: .80rem;
-        margin-top: 4px;
+        font-size: .78rem;
+        margin-top: 1px;
     }
 
     .section-title {
         color: #183247;
         font-size: 1rem;
         font-weight: 800;
-        margin: 0 0 9px 0;
+        margin: 0 0 6px 0;
     }
 
     .model-card {
         background: #fff;
         border: 1px solid #cbdcff;
         border-radius: 12px;
-        padding: 12px 8px;
+        padding: 7px 6px;
         text-align: center;
-        margin-bottom: 10px;
+        margin-bottom: 6px;
     }
 
     .model-check {
         background: #e1ecff;
         color: #2563eb;
-        width: 36px;
-        height: 36px;
-        line-height: 36px;
+        width: 28px;
+        height: 28px;
+        line-height: 28px;
         border-radius: 50%;
-        margin: 0 auto 6px auto;
-        font-size: 21px;
+        margin: 0 auto 4px auto;
+        font-size: 17px;
         font-weight: 800;
     }
 
@@ -392,7 +392,7 @@ st.markdown(
     .model-caption {
         font-size: .72rem;
         color: #64748b;
-        margin-top: 4px;
+        margin-top: 2px;
     }
 
     div[data-testid="stButton"] > button {
@@ -429,7 +429,7 @@ st.markdown(
         color: #17233c !important;
     }
 
-    /* Tabs: preserve Streamlit's native panel visibility; force readable contrast. */
+    /* ---------- Tabs ---------- */
     div[data-testid="stTabs"] {
         background: #ffffff !important;
         color: #17233c !important;
@@ -441,43 +441,37 @@ st.markdown(
         width: 100% !important;
     }
 
-    div[data-testid="stTabs"] [data-baseweb="tab-list"] {
+    div[data-testid="stTabs"] [data-baseweb="tab-list"],
+    div[data-testid="stTabs"] [role="tablist"] {
         display: flex !important;
-        flex-wrap: nowrap !important;
-        overflow-x: auto !important;
+        flex-wrap: wrap !important;
         gap: 6px !important;
         border-bottom: 1px solid #cbd5e1 !important;
         min-width: 0 !important;
     }
 
-    div[data-testid="stTabs"] button[data-baseweb="tab"] {
+    /* Robust selectors: work across Streamlit versions */
+    button[role="tab"] {
         background: #e2e8f0 !important;
-        color: #172033 !important;
-        border: 1px solid #94a3b8 !important;
         border-radius: 8px 8px 0 0 !important;
-        padding: 8px 12px !important;
-        min-width: 0 !important;
+        padding: 6px 12px !important;
         opacity: 1 !important;
     }
 
-    div[data-testid="stTabs"] button[data-baseweb="tab"] * {
+    button[role="tab"] * {
         color: #172033 !important;
         -webkit-text-fill-color: #172033 !important;
         opacity: 1 !important;
-        font-weight: 800 !important;
+        font-weight: 700 !important;
         font-size: .9rem !important;
-        text-shadow: none !important;
     }
 
-    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] {
+    button[role="tab"][aria-selected="true"] {
         background: #075985 !important;
-        border-color: #075985 !important;
         box-shadow: inset 0 -3px 0 #fbbf24 !important;
     }
 
-    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] *,
-    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] p,
-    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] span {
+    button[role="tab"][aria-selected="true"] * {
         color: #ffffff !important;
         -webkit-text-fill-color: #ffffff !important;
     }
@@ -490,33 +484,18 @@ st.markdown(
         height: auto !important;
         min-height: 0 !important;
         overflow: visible !important;
-        padding: 10px 4px 12px 4px !important;
+        padding: 6px 4px 8px 4px !important;
         opacity: 1 !important;
     }
 
-    /* Do not set color on every div in a tab: that overrides chart/card
-       styling and causes foreground/background collisions. Style text nodes only. */
     div[data-testid="stTabs"] [role="tabpanel"] p,
     div[data-testid="stTabs"] [role="tabpanel"] label,
+    div[data-testid="stTabs"] [role="tabpanel"] span,
     div[data-testid="stTabs"] [role="tabpanel"] h1,
     div[data-testid="stTabs"] [role="tabpanel"] h2,
-    div[data-testid="stTabs"] [role="tabpanel"] h3 {
-        color: #17233c !important;
-    }
-
-    div[data-testid="stTabs"] [role="tabpanel"] [data-testid="stMarkdownContainer"] p,
-    div[data-testid="stTabs"] [role="tabpanel"] [data-testid="stCaptionContainer"] {
-        color: #334155 !important;
-    }
-
-    div[data-testid="stTabs"] [role="tabpanel"] {
-        box-sizing: border-box !important;
-        min-width: 0 !important;
-    }
-
-    div[data-testid="stTabs"] [data-testid="stHorizontalBlock"] {
-        flex-wrap: wrap !important;
-        min-width: 0 !important;
+    div[data-testid="stTabs"] [role="tabpanel"] h3,
+    div[data-testid="stTabs"] [role="tabpanel"] div {
+        color: #17233c;
     }
 
     div[data-testid="stTabs"] [data-testid="stVerticalBlock"] {
@@ -525,52 +504,31 @@ st.markdown(
     }
 
     .metric-card {
-        background: #ffffff !important;
-        color: #17233c !important;
+        background: #fff;
         border: 1px solid #d9e4f3;
         border-radius: 10px;
-        padding: 10px 12px;
-        margin-bottom: 8px;
+        padding: 6px 8px;
+        margin-bottom: 5px;
     }
 
     .metric-label {
-        color: #475569 !important;
         font-size: .73rem;
         font-weight: 750;
         color: #64748b;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
     }
 
     .metric-value {
-        color: #102a43 !important;
-        font-size: 1.28rem;
+        font-size: 1.05rem;
         font-weight: 850;
         color: #102a43;
-        line-height: 1.2;
+        line-height: 1.1;
     }
 
     .metric-unit {
         font-size: .73rem;
         font-weight: 500;
         color: #64748b;
-    }
-
-    .metric-note {
-        color: #475569 !important;
-        font-size: .68rem;
-        margin-top: 4px;
-        line-height: 1.35;
-    }
-
-    .status-good {
-        background: #e9fbf2;
-        color: #047857;
-        border: 1px solid #b8efd2;
-        padding: 8px 9px;
-        border-radius: 9px;
-        font-size: .76rem;
-        font-weight: 750;
-        margin-top: 8px;
     }
 
     .small-note {
@@ -589,8 +547,8 @@ st.markdown(
     .result-sub {
         color: #475569;
         font-size: .82rem;
-        margin-top: 7px;
-        margin-bottom: 8px;
+        margin-top: 4px;
+        margin-bottom: 4px;
     }
 
     .peak-sub {
@@ -630,24 +588,9 @@ st.markdown(
         max-width: 100%;
     }
 
-    /* Avoid long left-column cards making the whole page unnecessarily tall */
-    .metric-card {
-        padding: 8px 10px;
-        margin-bottom: 6px;
+    div[data-testid="stSelectbox"], div[data-testid="stSlider"], div[data-testid="stRadio"] {
+        margin-bottom: .35rem !important;
     }
-
-    .metric-value {
-        font-size: 1.15rem;
-    }
-
-    /* Compact the dashboard so headline metrics and controls need less scrolling. */
-    .metric-card { padding: 6px 8px !important; margin-bottom: 5px !important; }
-    .metric-value { font-size: 1.05rem !important; line-height: 1.1 !important; }
-    .metric-note { font-size: .64rem !important; margin-top: 2px !important; }
-    .model-card { padding: 7px 6px !important; margin-bottom: 6px !important; }
-    .model-check { width: 28px !important; height: 28px !important; line-height: 28px !important; font-size: 17px !important; }
-    .hero { padding: 9px 16px !important; margin-bottom: 8px !important; }
-    div[data-testid="stSelectbox"], div[data-testid="stSlider"], div[data-testid="stRadio"] { margin-bottom: .35rem !important; }
 
     @media (max-width: 900px) {
         .block-container {
@@ -655,10 +598,12 @@ st.markdown(
             padding-right: .6rem !important;
         }
         .hero-title {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
-        div[data-testid="stTabs"] button[data-baseweb="tab"] {
-            padding: 7px 8px !important;
+        button[role="tab"] {
+            padding: 6px 8px !important;
+        }
+        button[role="tab"] * {
             font-size: .76rem !important;
         }
     }
@@ -936,8 +881,6 @@ with left_col:
         unsafe_allow_html=True,
     )
 
-    st.write("")
-
     run_button = st.button(
         T["run"],
         type="primary",
@@ -980,7 +923,10 @@ with left_col:
     if st.session_state.forecast_error:
         st.error(f"{T['error']}: {st.session_state.forecast_error}")
 
-    st.markdown(f"### {T['performance']}")
+    st.markdown(
+        f'<div class="section-title" style="margin-top:8px">{html.escape(T["performance"])}</div>',
+        unsafe_allow_html=True,
+    )
 
     result = st.session_state.forecast_result
     display_sample_index = min(
@@ -1048,28 +994,20 @@ with left_col:
             <div class="metric-value">{mae_text}
                 <span class="metric-unit">µg/m³</span>
             </div>
-            <div class="metric-note">{html.escape(T["mae_note"])}</div>
         </div>
         <div class="metric-card">
             <div class="metric-label">MSE</div>
             <div class="metric-value">{mse_text}
                 <span class="metric-unit">(µg/m³)²</span>
             </div>
-            <div class="metric-note">{html.escape(T["mse_note"])}</div>
         </div>
         <div class="metric-card">
             <div class="metric-label">Predict Rate</div>
             <div class="metric-value">{predict_rate:.1f}
                 <span class="metric-unit">%</span>
             </div>
-            <div class="metric-note">{html.escape(T["rate_note"])}</div>
         </div>
         """,
-        unsafe_allow_html=True,
-    )
-
-    st.markdown(
-        f'<div class="status-good">{html.escape(T["files"])}</div>',
         unsafe_allow_html=True,
     )
 
@@ -1163,7 +1101,7 @@ with right_col:
 
         st.markdown(
             f"""
-            <div style="display:flex;align-items:flex-end;gap:14px;margin:5px 0 3px 0">
+            <div style="display:flex;align-items:flex-end;gap:14px;margin:2px 0 2px 0">
                 <div class="result-value" style="color:{value_color}">
                     {peak_value:.1f}
                 </div>
@@ -1180,7 +1118,7 @@ with right_col:
             unsafe_allow_html=True,
         )
 
-        fig, ax = plt.subplots(figsize=(12.5, 4.7))
+        fig, ax = plt.subplots(figsize=(9.0, 2.0))
 
         ax.plot(
             history_times,
@@ -1312,7 +1250,7 @@ with right_col:
         st.markdown(
             f"""
             <div style="color:#4f46e5;font-size:.79rem;font-style:italic;
-                        margin-top:8px;line-height:1.5">
+                        margin-top:4px;line-height:1.5">
                 💡 {html.escape(T["explanation"])}: {html.escape(explanation)}
             </div>
             """,
@@ -1356,27 +1294,27 @@ with right_col:
                             border:1px solid #dbe4f0;
                             border-top:4px solid {color};
                             border-radius:10px;
-                            min-height:96px;
-                            padding:7px 3px 6px 3px;
+                            min-height:88px;
+                            padding:5px 3px 5px 3px;
                             text-align:center;
-                            margin-bottom:7px;
+                            margin-bottom:4px;
                         ">
                             <div style="font-size:.71rem;color:#64748b">
                                 {time_label}
                             </div>
-                            <div style="font-size:.65rem;color:#94a3b8;margin-top:2px">
+                            <div style="font-size:.65rem;color:#94a3b8;margin-top:1px">
                                 {date_label}
                             </div>
                             <div style="font-size:1.08rem;font-weight:850;
-                                        color:{color};margin:4px 0 3px 0">
+                                        color:{color};margin:3px 0 2px 0">
                                 {value:.1f}
                             </div>
                             <div style="display:inline-block;background:{bg};
                                         color:{color};border-radius:999px;
-                                        font-size:.65rem;font-weight:750;padding:3px 7px">
+                                        font-size:.65rem;font-weight:750;padding:2px 7px">
                                 {html.escape(label)}
                             </div>
-                            <div style="font-size:.64rem;color:#64748b;margin-top:4px">
+                            <div style="font-size:.64rem;color:#64748b;margin-top:3px">
                                 µg/m³
                             </div>
                         </div>
@@ -1387,7 +1325,7 @@ with right_col:
         st.markdown(
             f"""
             <div style="display:flex;flex-wrap:wrap;gap:16px;
-                        font-size:.76rem;color:#475569;margin:5px 0 12px 0">
+                        font-size:.76rem;color:#475569;margin:3px 0 8px 0">
                 <span><b style="color:#059669">●</b> {html.escape(T["good"])} (≤ 12)</span>
                 <span><b style="color:#d97706">●</b> {html.escape(T["moderate"])} (12–35)</span>
                 <span><b style="color:#ea580c">●</b> {html.escape(T["high"])} (35–55)</span>
@@ -1426,7 +1364,7 @@ with right_col:
             display_report,
             use_container_width=True,
             hide_index=True,
-            height=360,
+            height=320,
         )
 
         st.download_button(
@@ -1448,7 +1386,7 @@ st.markdown(
         text-align:center;
         color:#94a3b8;
         font-size:.68rem;
-        padding:8px 0 0 0;
+        padding:4px 0 0 0;
     ">
         {html.escape(T["footer"])}
     </div>
