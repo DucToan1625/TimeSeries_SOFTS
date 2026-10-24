@@ -1180,7 +1180,7 @@ with right_col:
             unsafe_allow_html=True,
         )
 
-        fig, ax = plt.subplots(figsize=(8.5, 1.8))
+        fig, ax = plt.subplots(figsize=(12.5, 4.7))
 
         ax.plot(
             history_times,
