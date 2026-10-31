@@ -1,0 +1,69 @@
+{
+  "project": "Hanoi PM2.5 Forecasting with SOFTS",
+  "target": "pm25",
+  "feature_columns": [
+    "pm25",
+    "pm10",
+    "temperature",
+    "humidity",
+    "wind_speed",
+    "pressure",
+    "rainfall"
+  ],
+  "input_hours": 96,
+  "forecast_hours": 24,
+  "input_shape_per_sample": [
+    96,
+    7
+  ],
+  "target_shape_per_sample": [
+    24,
+    1
+  ],
+  "split_method": "chronological global time split",
+  "split_ratio": {
+    "train": 0.7,
+    "validation": 0.15,
+    "test": 0.15
+  },
+  "scaler": "StandardScaler fitted on training data only",
+  "window_counts": {
+    "train": 4800,
+    "validation": 895,
+    "test": 1014
+  },
+  "array_shapes": {
+    "X_train": [
+      4800,
+      96,
+      7
+    ],
+    "Y_train": [
+      4800,
+      24,
+      1
+    ],
+    "X_val": [
+      895,
+      96,
+      7
+    ],
+    "Y_val": [
+      895,
+      24,
+      1
+    ],
+    "X_test": [
+      1014,
+      96,
+      7
+    ],
+    "Y_test": [
+      1014,
+      24,
+      1
+    ]
+  },
+  "outlier_policy": "IQR x 3 flags retained for review; values were not deleted solely because of IQR flags",
+  "notes": "All X and Y values are standardized. Inverse-transform PM2.5 using the pm25 mean and scale from scaler_stats.csv."
+}

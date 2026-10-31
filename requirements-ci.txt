@@ -1,0 +1,7 @@
+pytest
+ruff
+bandit
+pip-audit
+numpy
+scikit-learn
+torchvision
