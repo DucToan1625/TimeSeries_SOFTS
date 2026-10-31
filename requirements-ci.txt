@@ -5,3 +5,5 @@ pip-audit
 numpy
 scikit-learn
 torchvision
+torchmetrics
+termcolor

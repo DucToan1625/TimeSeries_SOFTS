@@ -1,41 +1,42 @@
-﻿import os
+﻿from pathlib import Path
+
+import pytest
 import torch
 
-REPO_DIR = os.path.abspath("external/dinov3")
-WEIGHTS_PATH = os.path.abspath(
-    "checkpoints/dinov3/dinov3_vits16_pretrain_lvd1689m-08c60483.pth"
+
+DINOV3_HUBCONF = Path("external/dinov3/hubconf.py")
+CHECKPOINT = Path(
+    "checkpoints/dinov3/"
+    "dinov3_vits16_pretrain_lvd1689m-08c60483.pth"
 )
 
-print("PyTorch:", torch.__version__)
-print("CUDA available:", torch.cuda.is_available())
-print("Checkpoint exists:", os.path.isfile(WEIGHTS_PATH))
 
-model = torch.hub.load(
-    REPO_DIR,
-    "dinov3_vits16",
-    source="local",
-    weights=WEIGHTS_PATH,
+@pytest.mark.skipif(
+    not DINOV3_HUBCONF.exists(),
+    reason="DINOv3 source is not available",
 )
+@pytest.mark.skipif(
+    not CHECKPOINT.exists(),
+    reason="DINOv3 checkpoint is not available",
+)
+def test_dinov3_pretrained_forward():
+    # Import và khởi tạo model bên trong test,
+    # không chạy khi pytest đang collection.
+    model = torch.hub.load(
+        str(DINOV3_HUBCONF.parent),
+        "dinov3_vits16",
+        source="local",
+        weights=str(CHECKPOINT),
+    ).eval()
 
-model.eval()
-model.requires_grad_(False)
+    x = torch.randn(1, 3, 224, 224)
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = model.to(device)
+    with torch.no_grad():
+        output = model(x)
 
-print("Device:", device)
-print("DINOv3 loaded successfully!")
+    if isinstance(output, dict):
+        assert "x_norm_clstoken" in output
+        output = output["x_norm_clstoken"]
 
-# Kiểm tra đầu ra với một ảnh RGB giả lập
-x = torch.randn(1, 3, 224, 224, device=device)
-
-with torch.inference_mode():
-    output = model(x)
-
-if isinstance(output, dict):
-    print("Output keys:", list(output.keys()))
-    for key, value in output.items():
-        if torch.is_tensor(value):
-            print(key, tuple(value.shape))
-else:
-    print("Output shape:", tuple(output.shape))
+    assert output.shape == (1, 384)
+    assert torch.isfinite(output).all()
