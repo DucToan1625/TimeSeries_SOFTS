@@ -17,11 +17,10 @@ The model uses 96 hours of air-quality and weather data, optionally combined wit
 \- **\*\*Live Demo:\*\*** [Streamlit App]\(https\://timeserieappfts-gpfkmqdj9hil3agwv7dsne.streamlit.app/)
 
 \- **\*\*Dataset:\*\*** [Kaggle Dataset]\(https\://www\.kaggle.com/datasets/dtoaneasy/hanoi-pm2-5-and-weather-hourly-dataset)
-\- **\*\*Docker Hub:\*\*** [SOFTS + DINOv3 PM2.5 image]\(https://hub.docker.com/r/ductoan2710/softs-dinov3-pm25)
 
-\- **\*\*Version:\*\*** \`v0.2\` (Experimental; Docker image published)
+\- **\*\*Version:\*\*** \`v0.1\` (Experimental)
 
-\- **\*\*Last Updated:\*\*** 2026-10-31
+\- **\*\*Last Updated:\*\*** 2026-10-24
 
 
 
@@ -41,7 +40,6 @@ The model uses 96 hours of air-quality and weather data, optionally combined wit
 
 4\. [Setup]\(#4-setup)
 
-
 5\. [Run & Verify]\(#5-run--verify)
 
 6\. [Usage]\(#6-usage)
@@ -59,7 +57,6 @@ The model uses 96 hours of air-quality and weather data, optionally combined wit
 12\. [Project Structure]\(#12-project-structure)
 
 13\. [References and Acknowledgement]\(#13-references-and-acknowledgement)
-14\. [Docker Deployment]\(#14-docker-deployment)
 
 
 
@@ -832,7 +829,6 @@ SOFTS/
 \- DINOv3 pretrained weights: https\://ai.meta.com/resources/models-and-libraries/dinov3-downloads/
 
 \- Kaggle dataset: https\://www\.kaggle.com/datasets/dtoaneasy/hanoi-pm2-5-and-weather-hourly-dataset
-\- Docker Hub image: https://hub.docker.com/r/ductoan2710/softs-dinov3-pm25
 
 
 
@@ -875,9 +871,6 @@ The SOFTS code base builds on [Informer2020]\(https\://github.com/zhouhaoyi/Info
 
 
 \</details>
-
-**---**
-
 **## 14. Docker Deployment**
 
 A prebuilt Docker image of the Streamlit PM2.5 forecasting application is published on Docker Hub.
