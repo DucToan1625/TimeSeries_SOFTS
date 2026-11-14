@@ -1,9 +1,29 @@
+
+# Testing
 pytest
+httpx
+
+# API
+fastapi
+uvicorn
+requests
+
+# Code quality and security
 ruff
 bandit
 pip-audit
+
+# Machine Learning
 numpy
+pandas
 scikit-learn
+scipy
+torch
 torchvision
 torchmetrics
+einops
 termcolor
+PyYAML
+
+# Visualization
+matplotlib
