@@ -1,0 +1,15 @@
+
+fastapi
+uvicorn
+httpx
+pytest
+requests
+numpy
+pandas
+scikit-learn
+scipy
+matplotlib
+seaborn
+torch
+einops
+PyYAML
