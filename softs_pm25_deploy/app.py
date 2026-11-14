@@ -2,6 +2,7 @@ import sys
 import io
 import random
 import html
+import os
 from pathlib import Path
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
@@ -842,6 +843,20 @@ def inverse_pm25(values, scaler_stats):
 
 def run_forecast(model, device, X_test, scaler_stats, sample_index):
     x_input = X_test[sample_index:sample_index + 1]
+
+    # Optional REST API mode. By default the existing local inference path is kept.
+    api_url = os.getenv("SOFTS_API_URL", "").strip()
+    if api_url:
+        from api.client import forecast_via_api
+        return np.asarray(
+            forecast_via_api(
+                x_input[0].tolist(),
+                base_url=api_url,
+                api_key=os.getenv("API_KEY"),
+            ),
+            dtype=np.float32,
+        )
+
     x_tensor = torch.as_tensor(x_input, dtype=torch.float32, device=device)
 
     decoder = torch.zeros(
