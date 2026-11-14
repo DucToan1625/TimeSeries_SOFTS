@@ -1,4 +1,5 @@
-name: CI/CD
+
+name: SOFTS CI/CD
 
 on:
   push:
@@ -15,6 +16,10 @@ jobs:
   tests:
     name: Run Python tests
     runs-on: ubuntu-latest
+
+    env:
+      API_KEY: "ci-test-api-key"
+      API_RATE_LIMIT_PER_MINUTE: "5"
 
     steps:
       - name: Checkout repository
@@ -36,6 +41,12 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements-ci.txt
           python -m pip install -r softs_pm25_deploy/requirements.txt
+
+      - name: Verify CI environment
+        run: |
+          python --version
+          python -c "import os; print('API_KEY configured:', bool(os.getenv('API_KEY')))"
+          python -c "import os; print('RATE LIMIT:', os.getenv('API_RATE_LIMIT_PER_MINUTE'))"
 
       - name: Show collected tests
         run: |
