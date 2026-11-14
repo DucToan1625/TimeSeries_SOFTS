@@ -1,13 +1,26 @@
 
+import os
+
 from fastapi.testclient import TestClient
 
 import api.main as api
 
-client = TestClient(api.app)
+
+TEST_API_KEY = os.getenv(
+    "API_KEY",
+    "softs-test-secret-2026"
+)
+
+client = TestClient(
+    api.app,
+    headers={
+        "Authorization": f"Bearer {TEST_API_KEY}"
+    }
+)
 
 
 def test_tc08_model_inference_failure(monkeypatch):
-    """TC08: Giả lập mô hình phát sinh lỗi khi dự báo."""
+    """TC08: Gia lap mo hinh phat sinh loi khi du bao."""
 
     def mock_predict(values):
         raise RuntimeError("Simulated model inference failure")
@@ -27,5 +40,5 @@ def test_tc08_model_inference_failure(monkeypatch):
 
     assert result["detail"] == "Forecast inference failed"
 
-    # Không để lộ thông tin lỗi nội bộ của mô hình.
+    # Khong de lo thong tin loi noi bo cua mo hinh.
     assert "Simulated model inference failure" not in response.text

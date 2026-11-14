@@ -1,11 +1,21 @@
 
+import os
 import numpy as np
 from fastapi.testclient import TestClient
 
 from api.main import app
 
-client = TestClient(app)
+TEST_API_KEY = os.getenv(
+    "API_KEY",
+    "softs-test-secret-2026"
+)
 
+client = TestClient(
+    app,
+    headers={
+        "Authorization": f"Bearer {TEST_API_KEY}"
+    }
+)
 
 def create_normal_input():
     """Tạo dữ liệu đầu vào 96 giờ, gồm 7 biến."""

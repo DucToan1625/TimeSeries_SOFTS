@@ -222,7 +222,7 @@ def require_api_key(
 
 def enforce_rate_limit(request: Request):
     """
-    Limit the number of requests from each client per minute.
+    Limit the number of valid requests from each client per minute.
     """
 
     client = (
@@ -639,15 +639,18 @@ def health():
     "/forecast",
     response_model=ForecastResponse,
     dependencies=[
-        Depends(require_api_key),
-        Depends(enforce_rate_limit)
+        Depends(require_api_key)
     ]
 )
 def forecast(
-    payload: ForecastRequest
+    payload: ForecastRequest,
+    request: Request
 ):
 
-    # Step 1: Execute model inference
+    # Step 1: Apply rate limit after request validation
+    enforce_rate_limit(request)
+
+    # Step 2: Execute model inference
     try:
 
         values = predict(
@@ -672,7 +675,7 @@ def forecast(
             detail="Forecast inference failed"
         ) from exc
 
-    # Step 2: Save forecast result to CSV
+    # Step 3: Save forecast result to CSV
     try:
 
         save_forecast(values)
@@ -684,7 +687,7 @@ def forecast(
             detail="Forecast storage unavailable"
         ) from exc
 
-    # Step 3: Return forecast response
+    # Step 4: Return forecast response
     return ForecastResponse(
         forecast_pm25=values
     )
