@@ -18,8 +18,11 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      API_KEY: "ci-test-api-key"
+      API_KEY: at02-test-token
+      SOFTS_TEST_API_KEY: at02-test-token
+      SOFTS_TEST_API_URL: http://127.0.0.1:8000
       API_RATE_LIMIT_PER_MINUTE: "5"
+      SOFTS_TEST_TIMEOUT: "60"
 
     steps:
       - name: Checkout repository
@@ -52,9 +55,41 @@ jobs:
         run: |
           python -m pytest --collect-only -q
 
+      - name: Start FastAPI server
+        run: |
+          nohup python -m uvicorn api.main:app \
+            --host 127.0.0.1 \
+            --port 8000 \
+            > uvicorn.log 2>&1 &
+
+          echo $! > uvicorn.pid
+
+      - name: Wait for API server
+        run: |
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:8000/health; then
+              echo "API server is ready."
+              exit 0
+            fi
+
+            echo "Waiting for API server..."
+            sleep 2
+          done
+
+          echo "API server failed to start."
+          cat uvicorn.log
+          exit 1
+
       - name: Run all tests
         run: |
           python -m pytest -v -rs
+
+      - name: Show API logs on failure
+        if: failure()
+        run: |
+          if [ -f uvicorn.log ]; then
+            cat uvicorn.log
+          fi
 
   build-and-push:
     name: Build and push Docker image
